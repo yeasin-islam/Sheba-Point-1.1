@@ -1,2 +1,26 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&family=Tiro+Bangla:ital@0;1&display=swap');
+
 @import "tailwindcss";
-@plugin "daisyui";
+
+@plugin "daisyui" {
+    themes: light --default;
+}
+
+
+@plugin "daisyui/theme" {
+    name: "light";
+    default: true;
+    --color-primary: #209187;
+    --color-secondary: #27292b;
+    --color-accent: #e0ad1f;
+}
+
+
+body {
+    font-family: "Roboto", "Tiro Bangla", serif;
+}
+
+.scrollBar {
+    scrollbar-width: thin;
+    scrollbar-color: #209187 transparent;
+}
