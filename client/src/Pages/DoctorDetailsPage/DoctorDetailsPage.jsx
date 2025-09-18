@@ -7,7 +7,7 @@ import { fetchDoctorById } from "../../utils/doctorUtils";
 import DoctorDetailsSkeleton from "../../components/Doctor/DoctorDetailsSkeleton";
 import DoctorFeedback from "../../components/Doctor/DoctorFeedback";
 
-export default function DoctorDetailsPage({ params }) {
+export default function DoctorDetailsPage() {
   const { id } = useParams();  
   const [doctor, setDoctor] = useState(null);
   const [loading, setLoading] = useState(true);

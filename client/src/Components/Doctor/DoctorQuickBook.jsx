@@ -26,7 +26,7 @@ export default function DoctorQuickBook({
   const [consent, setConsent] = useState(false);
   const [submitting, setSubmitting] = useState(false);
 
-  const axiosSecure = useAxios();
+  const axiosInstance = useAxios();
 
   const next7 = useMemo(() => enumerateNextDays(7), []);
   const availableForDate = useMemo(() => {
@@ -54,8 +54,8 @@ export default function DoctorQuickBook({
         updatedAt: new Date().toISOString(),
       };
 
-      const bookingRes = await axiosSecure.post('/appointments', bookingData);
-      const paymentRes = await axiosSecure.post(`/sslPayment/create-ssl-payment`, {
+      const bookingRes = await axiosInstance.post('/appointments', bookingData);
+      const paymentRes = await axiosInstance.post(`/sslPayment/create-ssl-payment`, {
         amount: mode === "video"
           ? doctor?.consultationFee || 800
           : (doctor?.consultationFee || 800) + 200,

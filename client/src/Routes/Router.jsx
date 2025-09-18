@@ -14,7 +14,6 @@ import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import MedicineReminders from "../pages/Dashboard/PatientsPages/MedicineReminders/MedicineReminders";
 import PatientProfile from "../pages/Dashboard/PatientsPages/PatientProfile/PatientProfile";
 import DoctorApplication from "../pages/Dashboard/PatientsPages/DoctorApplication";
-import DoctorDetailsPage from "../pages/DoctorDetailsPage/DoctorDetailsPage";
 import Login from "../pages/Authentication/Login/Login";
 import Register from "../pages/Authentication/Register/Register";
 import About from "../pages/About/About";
@@ -35,7 +34,9 @@ import PaymentSuccess from "../components/Payments/PaymentSuccess";
 import PaymentFail from "../components/Payments/PaymentFail";
 import PaymentCancel from "../components/Payments/PaymentCancel";
 import AllDoctors from "../pages/Dashboard/AdminPages/AllDoctors/AllDoctors";
-import AllDoctor from "../pages/AllDoctor.jsx/AllDoctor";
+import AllDoctor from "../Pages/AllDoctor.jsx/AllDoctor";
+import DoctorDetailsPage from "../Pages/DoctorDetailsPage/DoctorDetailsPage";
+
 
 
 export const router = createBrowserRouter([
