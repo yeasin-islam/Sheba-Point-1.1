@@ -65,7 +65,6 @@ exports.sslPaymentCreate = async (req, res) => {
     // Step 3: Save payment entry to database
     const db = await connectDB();
     const result = await db.collection("payments").insertOne(paymentEntry);
-    console.log("Payment saved:", result);
 
     // Step 4: Send payment URL to client for redirect
     res.send({ gatewayURL });
