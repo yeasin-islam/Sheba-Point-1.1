@@ -123,7 +123,12 @@ const DoctorApplication = () => {
       )
     }));
   };
-
+    // TODO: Handle profile image upload here before sending to backend.
+    // The `data.profileImage` will be a FileList object.
+    console.log("Doctor Application Data:", data);
+  axiosInstance.post('/patients/doctor-apply', data)
+    reset(); // Reset form after successful submission
+    setProfileImagePreview(null); // Clear image preview
   // Validation function
   const validateForm = () => {
     const newErrors = {};
