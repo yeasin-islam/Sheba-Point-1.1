@@ -1,21 +1,19 @@
 {
   "name": "server",
   "version": "1.0.0",
-  "main": "server.js",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
   "scripts": {
-    "start": "nodemon server.js",
-    "dev": "nodemon server.js",
+    "start": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
-  "keywords": [],
-  "author": "",
-  "license": "ISC",
-  "description": "```\r project/\r │\r ├── server.js               # Main entry file\r ├── routes/\r │   ├── userRoutes.js\r │   └── productRoutes.js\r ├── controllers/\r │   ├── userController.js\r │   └── productController.js\r ├── db/\r │   └── connect.js          # MongoDB connection helper\r ├── package.json\r └── .env\r ```",
   "dependencies": {
     "cors": "^2.8.5",
-    "dotenv": "^17.2.1",
+    "dotenv": "^17.2.2",
     "express": "^5.1.0",
-    "mongodb": "^6.18.0",
-    "nodemon": "^3.1.10"
+    "mongodb": "^6.20.0"
   }
 }

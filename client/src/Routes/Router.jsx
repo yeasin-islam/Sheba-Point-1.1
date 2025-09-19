@@ -1,5 +1,5 @@
 import MainLayout from "../Layouts/MainLayout/MainLayout";
-import { createBrowserRouter } from "react-router-dom";
+import { createBrowserRouter } from "react-router";
 import Home from "../pages/Home/Home/Home";
 import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
@@ -22,7 +22,6 @@ import ManageReport from "../Pages/dashboard/AdminPages/ManageReport/ManageRepor
 import PendingDoctors from "../Pages/dashboard/AdminPages/PendingDoctors.jsx/PendingDoctors";
 import PendingPharmaLabs from "../Pages/dashboard/AdminPages/PendingPharma&Labs/PendingPharmaLabs";
 import AdminProfile from "../Pages/dashboard/AdminPages/AdminProfile/AdminProfile";
-import ConsultationLayout from "../layouts/ConsultationLayout";
 import Emergency from "../pages/Emergency/Emergency";
 import MyBooking from "../pages/Dashboard/PatientsPages/MyBooking/MyBooking";
 import MyBookingDetails from "../pages/Dashboard/PatientsPages/MyBooking/MyBookingDetails";
@@ -36,6 +35,7 @@ import PaymentCancel from "../components/Payments/PaymentCancel";
 import AllDoctors from "../pages/Dashboard/AdminPages/AllDoctors/AllDoctors";
 import AllDoctor from "../Pages/AllDoctor.jsx/AllDoctor";
 import DoctorDetailsPage from "../Pages/DoctorDetailsPage/DoctorDetailsPage";
+import ConsultationLayout from "../Layouts/ConsultationLayout";
 
 
 
