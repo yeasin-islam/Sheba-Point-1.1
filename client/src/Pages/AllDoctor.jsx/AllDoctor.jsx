@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 import axios from "axios";
 
 const AllDoctor = ({ doctorsData }) => {
@@ -100,7 +100,7 @@ const AllDoctor = ({ doctorsData }) => {
           />
           {/* Rating */}
           <div className="absolute top-2 left-2 flex items-center bg-yellow-500 px-2 py-1 rounded text-white text-sm font-semibold shadow">
-            ⭐ {doc.ratings.toFixed(1)}
+            ⭐ {doc.ratings?.toFixed(1)}
           </div>
           {/* NEW Badge */}
           {isNew && (

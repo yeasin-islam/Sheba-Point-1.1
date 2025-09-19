@@ -1,59 +1,48 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { FaUserMd, FaHospitalSymbol, FaEnvelope, FaPhoneAlt, FaBolt, FaCheckCircle, FaTimesCircle, FaEye, FaUserNurse, FaBaby, FaStethoscope, FaTable, FaIdBadge, FaClipboardList, FaHourglassHalf } from "react-icons/fa";
 
-// Dummy data for pending doctors
-const pendingDoctors = [
-    {
-        id: 1,
-        name: 'Dr. Ayesha Rahman',
-        specialty: 'Cardiology',
-        email: 'ayesha.rahman@example.com',
-        phone: '01710000001',
-        status: 'pending',
-        details: 'MBBS, FCPS, 10 years experience',
-    avatar: <FaUserNurse />,
-    specialtyIcon: <FaStethoscope />
-    },
-    {
-        id: 2,
-        name: 'Dr. Imran Hossain',
-        specialty: 'Dermatology',
-        email: 'imran.hossain@example.com',
-        phone: '01710000002',
-        status: 'pending',
-        details: 'MBBS, MD, 8 years experience',
-    avatar: <FaUserMd />,
-    specialtyIcon: <FaHospitalSymbol />
-    },
-    {
-        id: 3,
-        name: 'Dr. Nusrat Jahan',
-        specialty: 'Pediatrics',
-        email: 'nusrat.jahan@example.com',
-        phone: '01710000003',
-        status: 'pending',
-        details: 'MBBS, DCH, 5 years experience',
-    avatar: <FaUserNurse />,
-    specialtyIcon: <FaBaby />
-    },
-];
 
-// Static functions
-function getAllPendingDoctors() {
-    return pendingDoctors;
-}
-function acceptDoctor(id) {
-    return { success: true, id };
-}
-function rejectDoctor(id) {
-    return { success: true, id };
-}
+// Helper to map specialty to icon
+const specialtyIconMap = {
+  Cardiology: <FaStethoscope />,
+  Dermatology: <FaHospitalSymbol />,
+  Pediatrics: <FaBaby />,
+};
+// Helper to get avatar icon (could be improved with gender/role info)
+const getAvatarIcon = (specialty) => {
+  if (specialty === 'Cardiology') return <FaUserNurse />;
+  if (specialty === 'Dermatology') return <FaUserMd />;
+  if (specialty === 'Pediatrics') return <FaUserNurse />;
+  return <FaUserMd />;
+};
+
+
+const API_BASE = "http://localhost:5000"; // Change if needed
 
 const PendingDoctors = () => {
-    const [doctors, setDoctors] = useState(getAllPendingDoctors());
+    const [doctors, setDoctors] = useState([]);
     const [selectedDoctor, setSelectedDoctor] = useState(null);
     const [showModal, setShowModal] = useState(false);
     const [viewMode, setViewMode] = useState('table'); // 'table' or 'cards'
+
+    // Fetch pending doctors from backend
+    useEffect(() => {
+    // setLoading(true); // removed unused loading
+    fetch(`${API_BASE}/patients/doctor-apply`)
+            .then(res => res.json())
+            .then(data => {
+                // Only show pending
+                const pending = data.filter(app => app.status === 'pending');
+                setDoctors(pending.map(doc => ({
+                  ...doc,
+                  avatar: getAvatarIcon(doc.specialty),
+                  specialtyIcon: specialtyIconMap[doc.specialty] || <FaStethoscope />,
+                  id: doc._id // MongoDB _id
+                })));
+            })
+            .catch(() => setDoctors([]))
+            // .finally(() => setLoading(false)); // removed unused loading
+    }, []);
 
     // Enhanced toast with react-icons
     const showToast = (msg, type = 'success') => {
@@ -83,16 +72,42 @@ const PendingDoctors = () => {
         }, 2500);
     };
 
-    const handleAccept = (id) => {
-        acceptDoctor(id);
-        showToast("Doctor accepted successfully!", 'success');
-        setDoctors(doctors.filter((doc) => doc.id !== id));
+
+    const handleAccept = async (id) => {
+    // setLoading(true); // removed unused loading
+        try {
+            const res = await fetch(`${API_BASE}/patients/doctor-apply/${id}/accept`, {
+                method: 'PATCH',
+                headers: { 'Content-Type': 'application/json' },
+            });
+            if (res.ok) {
+                showToast("Doctor accepted successfully!", 'success');
+                setDoctors(doctors.filter((doc) => doc.id !== id));
+            } else {
+                showToast("Failed to accept doctor!", 'error');
+            }
+        } catch {
+            showToast("Failed to accept doctor!", 'error');
+        }
+    // setLoading(false); // removed unused loading
     };
 
-    const handleReject = (id) => {
-        rejectDoctor(id);
-        showToast("Doctor rejected!", 'error');
-        setDoctors(doctors.filter((doc) => doc.id !== id));
+    const handleReject = async (id) => {
+    // setLoading(true); // removed unused loading
+        try {
+            const res = await fetch(`${API_BASE}/patients/doctor-apply/${id}/reject`, {
+                method: 'DELETE',
+            });
+            if (res.ok) {
+                showToast("Doctor rejected!", 'error');
+                setDoctors(doctors.filter((doc) => doc.id !== id));
+            } else {
+                showToast("Failed to reject doctor!", 'error');
+            }
+        } catch {
+            showToast("Failed to reject doctor!", 'error');
+        }
+    // setLoading(false); // removed unused loading
     };
 
     const handleViewDetails = (doctor) => {
@@ -105,21 +120,22 @@ const PendingDoctors = () => {
         setSelectedDoctor(null);
     };
 
-    const ActionButton = ({ onClick, variant, icon, children, className = "" }) => {
-        const baseClasses = "px-4 py-2 rounded-xl font-semibold shadow-lg transition-all duration-200 transform hover:scale-105 active:scale-95 flex items-center gap-2 text-sm";
+    // Compact icon-only action button for table
+    const ActionButton = ({ onClick, variant, icon, className = "" }) => {
+        const baseClasses = "w-7 h-7 rounded-full flex items-center justify-center shadow transition-all duration-150 hover:scale-105 active:scale-95 text-base";
         const variants = {
             accept: "bg-[#b2ece6] hover:bg-[#d2f6f2] text-[#209187] border border-[#209187]/30",
             reject: "bg-[#fff5d6] hover:bg-[#ffeeb0] text-[#e0ad1f] border border-[#e0ad1f]/30",
             view: "bg-[#f3f4f6] hover:bg-[#e5e7eb] text-[#27292b] border border-[#27292b]/10"
         };
-        
         return (
             <button
                 className={`${baseClasses} ${variants[variant]} ${className}`}
                 onClick={onClick}
+                title={variant.charAt(0).toUpperCase() + variant.slice(1)}
+                style={{ margin: '0 2px', padding: 0 }}
             >
-                <span className="text-lg">{icon}</span>
-                {children}
+                <span style={{ fontSize: '1rem', lineHeight: 1 }}>{icon}</span>
             </button>
         );
     };
@@ -193,31 +209,22 @@ const PendingDoctors = () => {
                                         <span className="text-gray-600 font-mono text-sm">{doctor.phone}</span>
                                     </td>
                                     <td className="py-4 px-6">
-                                        <div className="flex flex-wrap gap-2 justify-center">
+                                        <div className="flex flex-row gap-1 justify-center items-center min-h-0 min-w-0">
                                             <ActionButton
                                                 variant="accept"
                                                 icon={<FaCheckCircle />}
                                                 onClick={() => handleAccept(doctor.id)}
-                                                className="text-xs"
-                                            >
-                                                Accept
-                                            </ActionButton>
+                                            />
                                             <ActionButton
                                                 variant="reject"
                                                 icon={<FaTimesCircle />}
                                                 onClick={() => handleReject(doctor.id)}
-                                                className="text-xs"
-                                            >
-                                                Reject
-                                            </ActionButton>
+                                            />
                                             <ActionButton
                                                 variant="view"
                                                 icon={<FaEye />}
                                                 onClick={() => handleViewDetails(doctor)}
-                                                className="text-xs"
-                                            >
-                                                View
-                                            </ActionButton>
+                                            />
                                         </div>
                                     </td>
                                 </tr>

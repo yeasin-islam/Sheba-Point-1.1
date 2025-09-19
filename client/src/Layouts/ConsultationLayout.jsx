@@ -17,7 +17,7 @@ import {
     FiUser,
     FiClock
 } from "react-icons/fi";
-import { Link } from "react-router-dom";
+import { Link } from "react-router";
 
 const ConsultationLayout = () => {
     const [activeTab, setActiveTab] = useState("chat");
