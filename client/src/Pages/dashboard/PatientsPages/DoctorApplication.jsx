@@ -109,7 +109,6 @@ const DoctorApplication = () => {
       availability: prev.availability.filter(day => day.id !== id)
     }));
   };
-
   // Update availability day
   const updateAvailabilityDay = (id, field, value) => {
     setFormData(prev => ({
