@@ -27,7 +27,7 @@ exports.createPatient = async (req, res) => {
   }
 };
 exports.createAnApplication = async (req, res) => {
-  const applicationData = req.body;
+  const applicationData = { ...req.body, status: 'pending' };
   try {
     const db = await connectDB();
     // added validation is email is exist do not take again
@@ -47,11 +47,45 @@ exports.createAnApplication = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
 exports.getAllDoctorApplications = async (req, res) => {
   try {
     const db = await connectDB();
     const applications = await db.collection("applications").find().toArray();
     res.json(applications);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Accept doctor application (update status to 'accepted')
+exports.acceptDoctorApplication = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const db = await connectDB();
+    const result = await db.collection("applications").updateOne(
+      { _id: require('mongodb').ObjectId(id) },
+      { $set: { status: "accepted" } }
+    );
+    if (result.matchedCount === 0) {
+      return res.status(404).json({ error: "Application not found." });
+    }
+    res.json({ success: true, id });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+// Reject doctor application (delete from collection)
+exports.rejectDoctorApplication = async (req, res) => {
+  const { id } = req.params;
+  try {
+    const db = await connectDB();
+    const result = await db.collection("applications").deleteOne({ _id: require('mongodb').ObjectId(id) });
+    if (result.deletedCount === 0) {
+      return res.status(404).json({ error: "Application not found." });
+    }
+    res.json({ success: true, id });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
