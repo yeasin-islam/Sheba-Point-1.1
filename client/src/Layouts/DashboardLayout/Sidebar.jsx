@@ -23,7 +23,6 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
   // Sidebar navigation routes
   const routes = [
     { title: "Home", path: "/dashboard", icon: <FiHome className="text-xl" />, end: true },
-    { title: "Medicine Reminders", path: "/dashboard/patient/medicine-reminders", icon: <GiMedicinePills className="text-xl" /> },
     { title: "My Booking", path: "/dashboard/patient/my-booking", icon: <FaClipboard className="text-xl" /> },
     { title: "Doctor Application", path: "/dashboard/patient/doctor-application", icon: <FaUserDoctor className="text-xl" /> },
     { title: "Patient Profile", path: "/dashboard/patient/profile", icon: <FiUser className="text-xl" /> },

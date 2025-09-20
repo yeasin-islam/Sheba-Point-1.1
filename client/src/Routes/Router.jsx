@@ -112,11 +112,6 @@ export const router = createBrowserRouter([
         element: <HealthRecords />,
       },
       {
-        path: "patient/medicine-reminders",
-        element: <MedicineReminders />,
-      },
-
-      {
         path: "patient/profile",
         element: <PatientProfile></PatientProfile>,
       },
