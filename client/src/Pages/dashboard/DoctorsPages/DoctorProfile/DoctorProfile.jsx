@@ -463,7 +463,7 @@ const DoctorDashboardProfile = () => {
                       </h3>
                       <ul className="space-y-3">
                         {doctorData.education.map((edu, index) => (
-                          <li className="text-gray-600">
+                          <li key={index} className="text-gray-600">
                             <FaGraduationCap className="inline mr-3 text-blue-500" />
                             <strong>{edu.degree}</strong> - {edu.institution} (
                             {edu.year})
@@ -476,7 +476,7 @@ const DoctorDashboardProfile = () => {
                       </h3>
                       <ul className="space-y-3">
                         {doctorData.awards.map((award, index) => (
-                          <li className="text-gray-600">
+                          <li key={index} className="text-gray-600">
                             <FaAward className="inline mr-3 text-amber-500" />
                             <strong>{award.name}</strong> - {award.issuer} (
                             {award.year})
