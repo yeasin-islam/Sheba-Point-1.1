@@ -36,7 +36,7 @@ exports.createAnApplication = async (req, res) => {
       .findOne({ email: applicationData.email });
     if (existingApplication) {
       return res
-        .status(400)
+        .status(201)
         .json({ error: "Application already exists for this email." });
     }
     const result = await db

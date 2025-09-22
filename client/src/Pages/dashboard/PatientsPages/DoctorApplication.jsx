@@ -10,6 +10,7 @@ import {
   AlertCircle,
 } from "lucide-react";
 import useAxios from "./../../../Hooks/useAxios";
+import toast from "react-hot-toast";
 
 const specialtiesOptions = [
   "Cardiology",
@@ -72,10 +73,18 @@ const DoctorApplication = () => {
         ...data,
         experienceYears: Number(data.experienceYears),
       };
-      await axiosInstance.post("/patients/doctor-apply", submissionData);
-      reset();
+      await axiosInstance
+        .post("/patients/doctor-apply", submissionData)
+        .then((response) => {
+          if (response.data.error) {
+            toast.error(response.data.error);
+          } else if (response.data.insertedId) {
+            toast.success("Application submitted successfully!");
+            reset();
+          }
+        });
     } catch (error) {
-      console.error("Submission error:", error);
+      toast.error("Submission error:", error);
     }
   };
 
@@ -84,10 +93,10 @@ const DoctorApplication = () => {
       <div className="max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600 rounded-full mb-4">
+          <div className="inline-flex items-center justify-center w-16 h-16 bg-teal-600 rounded-full mb-4">
             <Stethoscope className="w-8 h-8 text-white" />
           </div>
-          <h1 className="text-4xl font-bold bg-gradient-to-r from-blue-600 to-indigo-600 bg-clip-text text-transparent mb-2">
+          <h1 className="text-4xl font-bold bg-gradient-to-r from-teal-600 to-teal-600 bg-clip-text text-transparent mb-2">
             Doctor Application
           </h1>
           <p className="text-gray-600 text-lg">
@@ -97,9 +106,9 @@ const DoctorApplication = () => {
 
         {/* Success Message */}
         {isSubmitSuccessful && (
-          <div className="bg-green-50 border border-green-200 rounded-xl p-4 mb-8 flex items-center gap-3">
-            <CheckCircle className="w-5 h-5 text-green-600" />
-            <span className="text-green-800 font-medium">
+          <div className="bg-teal-50 border border-teal-200 rounded-xl p-4 mb-8 flex items-center gap-3">
+            <CheckCircle className="w-5 h-5 text-teal-600" />
+            <span className="text-teal-800 font-medium">
               Application submitted successfully!
             </span>
           </div>
@@ -118,7 +127,7 @@ const DoctorApplication = () => {
         <form onSubmit={handleSubmit(onSubmit)} className="space-y-8">
           {/* Personal Information */}
           <div className="bg-white rounded-2xl shadow-lg border border-gray-100 overflow-hidden">
-            <div className="bg-gradient-to-r from-blue-600 to-indigo-600 p-6">
+            <div className="bg-gradient-to-r from-teal-600 to-green-600 p-6">
               <div className="flex items-center gap-3">
                 <User className="w-6 h-6 text-white" />
                 <h2 className="text-xl font-semibold text-white">
@@ -197,7 +206,9 @@ const DoctorApplication = () => {
                   placeholder="Your address"
                 />
                 {errors.address && (
-                  <p className="text-red-500 text-sm mt-1">Address is required</p>
+                  <p className="text-red-500 text-sm mt-1">
+                    Address is required
+                  </p>
                 )}
               </div>
 
@@ -310,7 +321,7 @@ const DoctorApplication = () => {
 
           {/* Availability */}
           <div className="bg-white rounded-2xl shadow-lg border overflow-hidden">
-            <div className="bg-gradient-to-r from-purple-600 to-violet-600 p-6 flex justify-between">
+            <div className="bg-gradient-to-r from-green-600 to-teal-600 p-6 flex justify-between">
               <div className="flex items-center gap-3">
                 <Calendar className="w-6 h-6 text-white" />
                 <h2 className="text-xl font-semibold text-white">
@@ -320,7 +331,10 @@ const DoctorApplication = () => {
               <button
                 type="button"
                 onClick={() =>
-                  append({ dayOfWeek: "", slots: [{ startTime: "", endTime: "" }] })
+                  append({
+                    dayOfWeek: "",
+                    slots: [{ startTime: "", endTime: "" }],
+                  })
                 }
                 className="bg-white/20 hover:bg-white/30 text-white px-4 py-2 rounded-lg flex items-center gap-2"
               >
@@ -338,15 +352,17 @@ const DoctorApplication = () => {
               {fields.map((field, index) => (
                 <div
                   key={field.id}
-                  className="bg-gradient-to-r from-purple-50 to-violet-50 border rounded-xl p-6 mb-4"
+                  className="border border-primary/20 rounded-xl p-6 mb-4"
                 >
-                  <div className="flex justify-between mb-4">
-                    <div className="flex-1">
-                      <label className="block text-sm font-medium text-gray-700 mb-2">
+                                        <label className="block text-sm font-medium text-gray-700 mb-2">
                         Day of Week *
                       </label>
+                  <div className="flex justify-between items-center mb-4">
+                    <div className="flex-1">
                       <select
-                        {...register(`availability.${index}.dayOfWeek`, { required: true })}
+                        {...register(`availability.${index}.dayOfWeek`, {
+                          required: true,
+                        })}
                         className="w-full px-4 py-3 border rounded-xl"
                       >
                         <option value="">Select Day</option>
@@ -364,9 +380,9 @@ const DoctorApplication = () => {
                     <button
                       type="button"
                       onClick={() => remove(index)}
-                      className="ml-4 p-2 text-red-500 hover:bg-red-50 rounded-lg"
+                      className="mr-4 px-2 py-1 text-red-500 hover:bg-red-50 rounded-full"
                     >
-                      <X className="w-5 h-5" />
+                      <X className="" />
                     </button>
                   </div>
 
@@ -377,9 +393,12 @@ const DoctorApplication = () => {
                       </label>
                       <input
                         type="time"
-                        {...register(`availability.${index}.slots.0.startTime`, {
-                          required: true,
-                        })}
+                        {...register(
+                          `availability.${index}.slots.0.startTime`,
+                          {
+                            required: true,
+                          }
+                        )}
                         className="w-full px-4 py-3 border rounded-xl"
                       />
                     </div>
@@ -418,7 +437,7 @@ const DoctorApplication = () => {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="bg-gradient-to-r from-blue-600 to-indigo-600 text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-lg disabled:opacity-50"
+              className="bg-gradient-to-r from-green-600 to-teal-600 text-white px-12 py-4 rounded-xl font-semibold text-lg shadow-lg disabled:opacity-50"
             >
               {isSubmitting ? "Submitting..." : "Submit Application"}
             </button>
