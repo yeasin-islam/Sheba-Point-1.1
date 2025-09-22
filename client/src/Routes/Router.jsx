@@ -31,6 +31,9 @@ import ConsultationLayout from "../Layouts/ConsultationLayout";
 import DoctorApplication from "../Pages/dashboard/PatientsPages/DoctorApplication";
 import DoctorProfile from "../components/Doctor/DoctorProfile";
 import AllDoctors from "../Pages/dashboard/AdminPages/AllDoctors/AllDoctors";
+import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
+import Login from './../Pages/Authentication/Login/Login';
+import Register from "../Pages/Authentication/Register/Register";
 
 export const router = createBrowserRouter([
   // Keep standards, use elements instead of Components for consistency
@@ -66,15 +69,6 @@ export const router = createBrowserRouter([
         path: "all-available-doctors",
         element: <AllDoctor />,
       },
-
-      // {
-      //   path: "/login",
-      //   Component: Login,
-      // },
-      // {
-      //   path: "/register",
-      //   element: <Register></Register>,
-      // },
       {
         path: "about",
         element: <About />,
@@ -185,5 +179,19 @@ export const router = createBrowserRouter([
   {
     path: "/*",
     element: <ErrorPage></ErrorPage>,
+  },
+  {
+    path: "/auth",
+    element: <AuthLayout></AuthLayout>,
+    children: [
+      {
+        path: "login",
+        element: <Login />,
+      },
+      {
+        path: "register",
+        element: <Register />,
+      }
+    ],
   },
 ]);
