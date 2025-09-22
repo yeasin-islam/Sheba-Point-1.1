@@ -10,10 +10,7 @@ import DoctorConsulation from "../pages/Dashboard/DoctorsPages/DoctorConsultatio
 import PatientConsultation from "../pages/Dashboard/PatientsPages/PatientConsultation/PatientConsultation";
 import HealthRecords from "../pages/Dashboard/PatientsPages/HealthRecords/HealthRecords";
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
-import MedicineReminders from "../pages/Dashboard/PatientsPages/MedicineReminders/MedicineReminders";
 import PatientProfile from "../pages/Dashboard/PatientsPages/PatientProfile/PatientProfile";
-import Login from "../pages/Authentication/Login/Login";
-import Register from "../pages/Authentication/Register/Register";
 import About from "../pages/About/About";
 import AllPatients from "../pages/Dashboard/AdminPages/AllPatients/AllPatients";
 import ManageReport from "../Pages/dashboard/AdminPages/ManageReport/ManageReport";
@@ -23,8 +20,6 @@ import AdminProfile from "../Pages/dashboard/AdminPages/AdminProfile/AdminProfil
 import Emergency from "../pages/Emergency/Emergency";
 import MyBooking from "../pages/Dashboard/PatientsPages/MyBooking/MyBooking";
 import MyBookingDetails from "../pages/Dashboard/PatientsPages/MyBooking/MyBookingDetails";
-import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
-import AuthHome from "../pages/Authentication/AuthHome/AuthHome";
 import ManageBookings from "../pages/Dashboard/DoctorsPages/ManageBookings/ManageBookings";
 import MyPatients from "../pages/Dashboard/DoctorsPages/MyPatients/MyPatients";
 import PaymentSuccess from "../components/Payments/PaymentSuccess";
@@ -190,23 +185,5 @@ export const router = createBrowserRouter([
   {
     path: "/*",
     element: <ErrorPage></ErrorPage>,
-  },
-  {
-    path: "/auth",
-    element: <AuthLayout></AuthLayout>,
-    children: [
-      {
-        index: true,
-        element: <AuthHome />,
-      },
-      {
-        path: "login",
-        element: <Login />,
-      },
-      {
-        path: "register",
-        element: <Register />,
-      },
-    ],
   },
 ]);

@@ -5,7 +5,7 @@ import useAuth from '../../Hooks/useAuth';
 const Navbar = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
     const { user, logOut } = useAuth();
-    console.log(user)
+
     const handleLogOut = () => {
         logOut();
     };
