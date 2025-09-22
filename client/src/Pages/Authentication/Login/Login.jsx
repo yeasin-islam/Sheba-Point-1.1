@@ -51,7 +51,7 @@ const Login = () => {
           name: res.user.displayName,
           email: res.user.email,
           profileImage: res.user.photoURL,
-          role: "customer",
+          role: "patient",
           isVerified: false,
           createdAt,
           lastLogin,
@@ -69,8 +69,8 @@ const Login = () => {
 
   return (
     <div className="w-full max-w-md mx-auto relative">
-      <h2 className="text-2xl md:text-3xl font-bold text-center text-[#F85606] mb-6">
-        Login to Buy Nex
+      <h2 className="text-2xl md:text-3xl font-bold text-center text-[#209187] mb-6">
+        Login to Sheba Point
       </h2>
 
       <form onSubmit={handleLogin} className="space-y-4">
@@ -113,7 +113,7 @@ const Login = () => {
 
         <button
           type="submit"
-          className="w-full bg-[#F85606] text-white font-semibold py-3 rounded-lg hover:bg-[#e54e04] transition cursor-pointer"
+          className="w-full bg-[#209187] text-white font-semibold py-3 rounded-lg hover:bg-[#1b6f6f] transition cursor-pointer"
         >
           Login
         </button>
@@ -138,7 +138,7 @@ const Login = () => {
         <Link
           state={location.state}
           to="/auth/register"
-          className="text-[#F85606] font-semibold"
+          className="text-[#209187] font-semibold"
         >
           Register
         </Link>
@@ -146,7 +146,7 @@ const Login = () => {
 
       <Link
         to="/"
-        className="absolute top-4 right-4 text-gray-400 hover:text-[#F85606] text-4xl font-bold"
+        className="absolute top-4 right-4 text-gray-400 hover:text-[#209187] text-4xl font-bold"
         aria-label="Go Home"
       >
         &times;
