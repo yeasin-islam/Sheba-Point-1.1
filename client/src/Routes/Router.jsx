@@ -5,7 +5,6 @@ import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
 import Appointments from "../pages/Dashboard/DoctorsPages/Appointments/Appointments";
 import Referrals from "../pages/Dashboard/DoctorsPages/Referrals/Referrals";
-import DoctorProfile from "../pages/Dashboard/DoctorsPages/DoctorProfile/DoctorProfile";
 import DoctorsPatient from "../pages/Dashboard/DoctorsPages/DoctorsPatient/DoctorsPatient";
 import DoctorConsulation from "../pages/Dashboard/DoctorsPages/DoctorConsultation/DoctorConsultation";
 import PatientConsultation from "../pages/Dashboard/PatientsPages/PatientConsultation/PatientConsultation";
@@ -13,7 +12,6 @@ import HealthRecords from "../pages/Dashboard/PatientsPages/HealthRecords/Health
 import ErrorPage from "../pages/ErrorPage/ErrorPage";
 import MedicineReminders from "../pages/Dashboard/PatientsPages/MedicineReminders/MedicineReminders";
 import PatientProfile from "../pages/Dashboard/PatientsPages/PatientProfile/PatientProfile";
-import DoctorApplication from "../pages/Dashboard/PatientsPages/DoctorApplication";
 import Login from "../pages/Authentication/Login/Login";
 import Register from "../pages/Authentication/Register/Register";
 import About from "../pages/About/About";
@@ -32,12 +30,12 @@ import MyPatients from "../pages/Dashboard/DoctorsPages/MyPatients/MyPatients";
 import PaymentSuccess from "../components/Payments/PaymentSuccess";
 import PaymentFail from "../components/Payments/PaymentFail";
 import PaymentCancel from "../components/Payments/PaymentCancel";
-import AllDoctors from "../pages/Dashboard/AdminPages/AllDoctors/AllDoctors";
 import AllDoctor from "../Pages/AllDoctor.jsx/AllDoctor";
 import DoctorDetailsPage from "../Pages/DoctorDetailsPage/DoctorDetailsPage";
 import ConsultationLayout from "../Layouts/ConsultationLayout";
-
-
+import DoctorApplication from "../Pages/dashboard/PatientsPages/DoctorApplication";
+import DoctorProfile from "../components/Doctor/DoctorProfile";
+import AllDoctors from "../Pages/dashboard/AdminPages/AllDoctors/AllDoctors";
 
 export const router = createBrowserRouter([
   // Keep standards, use elements instead of Components for consistency
@@ -57,9 +55,9 @@ export const router = createBrowserRouter([
         path: "payment-success",
         element: <PaymentSuccess />,
       },
-       {
+      {
         path: "all-doctors",
-        element: <AllDoctor/>,
+        element: <AllDoctor />,
       },
       {
         path: "payment-fail",
@@ -70,8 +68,8 @@ export const router = createBrowserRouter([
         element: <PaymentCancel />,
       },
       {
-        path:"all-available-doctors",
-        element: <AllDoctor />
+        path: "all-available-doctors",
+        element: <AllDoctor />,
       },
 
       // {
@@ -203,12 +201,12 @@ export const router = createBrowserRouter([
       },
       {
         path: "login",
-        element: <Login />
+        element: <Login />,
       },
       {
         path: "register",
-        element: <Register />
-      }
-    ]
-  }
+        element: <Register />,
+      },
+    ],
+  },
 ]);
