@@ -35,8 +35,7 @@ exports.getUserById = async (req, res) => {
 exports.createUser = async (req, res) => {
   try {
     const db = await connectDB();
-    const { email, name, role, lastLogin, creationTime } = req.body;
-    console.log(email);
+    const { email, name, role, lastLogin, } = req.body;
     const isUserExist = await db.collection("users").findOne({ email });
     if (isUserExist) {
         const result = await db.collection("users").updateOne(
@@ -46,7 +45,6 @@ exports.createUser = async (req, res) => {
       return res.send(result, { message: "User already exists" });
     
     } else {
-      console.log("user Nai");
       const result = await db.collection("users").insertOne(req.body);
       res.status(201).json(result);
     }
@@ -56,11 +54,6 @@ exports.createUser = async (req, res) => {
   }
 };
 
-exports.testUser = async (req, res) => {
-  const db = await connectDB();
-  const result = await db.collection("users").insertOne(req.body);
-  res.status(201).json(result);
-};
 
 // This is POST Method to update user data
 exports.updateUser = async (req, res) => {
@@ -82,6 +75,16 @@ exports.deleteUser = async (req, res) => {
     const result = await db
       .collection("users")
       .deleteOne({ _id: new ObjectId(req.params.id) });
+    res.json(result);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+// delete all users
+exports.deleteAllUsers = async (req, res) => {
+  try {
+    const db = await connectDB();
+    const result = await db.collection("users").deleteMany({});
     res.json(result);
   } catch (err) {
     res.status(500).json({ error: err.message });
