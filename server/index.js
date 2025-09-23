@@ -18,7 +18,7 @@ app.use(express.urlencoded({ extended: true })); // for form-data (SSLCommerz se
 
 
 // Routes
-app.use("/users", userRoutes);
+app.use("/user", userRoutes);
 app.use("/doctors", doctorRoutes);
 app.use("/patients", patientRoutes);
 
