@@ -118,10 +118,10 @@ export default function DoctorProfile({ doctor }) {
             <MapPin className="h-5 w-5 text-primary" /> {doctor.address}
           </div>
           <div className="flex items-center gap-2 p-4 text-sm text-base-content/80">
-            <Languages className="h-5 w-5 text-primary" /> {doctor.languages.join(", ")}
+            <Languages className="h-5 w-5 text-primary" /> {doctor.languages?.join(", ")}
           </div>
           <div className="flex items-center gap-2 p-4 text-sm text-base-content/80">
-            <NotebookPen className="h-5 w-5 text-primary" /> {doctor.qualifications.join(", ")}
+            <NotebookPen className="h-5 w-5 text-primary" /> {doctor.qualifications?.join(", ")}
           </div>
         </div>
 

@@ -72,7 +72,7 @@ const HealthRecords = () => {
             <h2 className="text-2xl font-semibold mb-4 text-teal-700">Patient Overview</h2>
             <div className="flex items-center mb-4">
               <div className="w-16 h-16 bg-teal-200 rounded-full flex items-center justify-center text-teal-800 font-bold text-lg mr-4 shadow-inner">
-                {patientData.name.split(' ').map(n => n[0]).join('')}
+                {patientData.name.split(' ').map(n => n[0])?.join('')}
               </div>
               <div>
                 <p className="text-lg font-bold">{patientData.name}</p>
@@ -83,11 +83,11 @@ const HealthRecords = () => {
             <div className="space-y-3 mb-4">
               <div>
                 <h3 className="font-semibold text-gray-600">Allergies</h3>
-                <p className="text-sm text-red-500 font-bold">{patientData.allergies.join(', ')}</p>
+                <p className="text-sm text-red-500 font-bold">{patientData.allergies?.join(', ')}</p>
               </div>
               <div>
                 <h3 className="font-semibold text-gray-600">Active Conditions</h3>
-                <p className="text-sm text-yellow-600 font-bold">{patientData.activeConditions.join(', ')}</p>
+                <p className="text-sm text-yellow-600 font-bold">{patientData.activeConditions?.join(', ')}</p>
               </div>
             </div>
 

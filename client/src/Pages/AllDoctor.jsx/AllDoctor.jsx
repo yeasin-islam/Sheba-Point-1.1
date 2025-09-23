@@ -124,7 +124,7 @@ const AllDoctor = ({ doctorsData }) => {
             <p className="flex items-center text-sm font-medium text-teal-600 mt-1 truncate">
               📍 {doc.address}
             </p>
-            <p className="mt-2 text-sm text-gray-600 truncate">{doc.specialties.join(", ")}</p>
+            <p className="mt-2 text-sm text-gray-600 truncate">{doc.specialties?.join(", ")}</p>
           </div>
           <div className="mt-4 flex items-center justify-between">
             <span className="text-sm font-semibold text-teal-600">{doc.experienceYears} yrs exp</span>
