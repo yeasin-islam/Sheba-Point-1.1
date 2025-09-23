@@ -26,7 +26,7 @@ export function getInitials(name) {
     .split(" ")
     .map((s) => s[0]?.toUpperCase())
     .slice(0, 2)
-    .join("");
+    ?.join("");
 }
 
 export function isMatchingDay(target, date) {
@@ -71,5 +71,5 @@ export function expandSlotsToIntervals(slot) {
 }
 
 export function classNames(...xs) {
-  return xs.filter(Boolean).join(" ");
+  return xs.filter(Boolean)?.join(" ");
 }
