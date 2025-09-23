@@ -17,21 +17,23 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-// This is a GET method to find a specific user data
-exports.getUserById = async (req, res) => {
+//getUserByEmail
+exports.getUserByEmail = async (req, res) => {
   try {
     const db = await connectDB();
-    const user = await db
-      .collection("users")
-      .findOne({ _id: new ObjectId(req.params.id) });
-    if (!user) return res.status(404).json({ message: "User not found" });
-    res.json(user);
+    const email = req.params.email;
+    const user = await db.collection("users").findOne({ email });
+    if (user) {
+      res.json(user);
+    } else {
+      res.status(404).json({ message: "User not found" });
+    }
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 };
 
-// This is POST methid to create a user
+// This is POST method to create a user
 exports.createUser = async (req, res) => {
   try {
     const db = await connectDB();
