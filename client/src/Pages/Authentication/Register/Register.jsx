@@ -36,7 +36,7 @@ const Register = () => {
           role: "patient",
           uid: result.user.uid,
         };
-        await axiosInstance.post("/register", profileInfo);
+        await axiosInstance.post("/user/register", profileInfo);
         await refetchUserData();
       }
     } catch (error) {
@@ -67,7 +67,7 @@ const Register = () => {
           lastLogin,
           uid: res.user.uid,
         };
-        await axiosInstance.post("/register", profileInfo);
+        await axiosInstance.post("/user/register", profileInfo);
         await refetchUserData();
         toast.success("Logged in with Google");
         navigate(location?.state || "/");
