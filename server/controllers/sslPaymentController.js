@@ -5,14 +5,13 @@ exports.sslPaymentCreate = async (req, res) => {
   const payment = req.body; // Get payment info from client
   // Generate a unique transaction ID for this payment
   const trxid = new ObjectId().toString();
-
-  // Create a payment entry to store in DB
+  const db = await connectDB();
   const paymentEntry = {
     ...payment,
     transactionId: trxid,
-    status: "pending", // default: not paid yet
-    paid_at: new Date(), // store current time
-    paymentMethod: [], // will be updated after payment success
+    status: "pending",
+    paid_at: new Date(),
+    paymentMethod: [],
   };
 
   // Prepare data for SSLCommerz payment request
@@ -22,7 +21,7 @@ exports.sslPaymentCreate = async (req, res) => {
     total_amount: payment.amount, // payment amount
     currency: "BDT", // currency (BDT for Taka)
     tran_id: payment.appointmentId, // unique transaction ID
-    appointmentId: payment.appointmentId, 
+    appointmentId: payment.appointmentId,
     // Callback URLs
     success_url: "http://localhost:5000/sslPayment/successPayment", // on success
     fail_url: "http://localhost:5000/sslPayment/paymentFail", // on fail
@@ -62,9 +61,8 @@ exports.sslPaymentCreate = async (req, res) => {
     const gatewayURL = responseData?.GatewayPageURL;
 
     // Step 3: Save payment entry to database
-    const db = await connectDB();
-    const result = await db.collection("payments").insertOne(paymentEntry);
 
+    const result = await db.collection("payments").insertOne(paymentEntry);
     // Step 4: Send payment URL to client for redirect
     res.send({ gatewayURL });
   } catch (error) {
@@ -76,7 +74,7 @@ exports.sslPaymentCreate = async (req, res) => {
 exports.sslPaymentSuccess = async (req, res) => {
   // Step 1: Get success data sent from SSLCommerz
   const paymentSuccess = req.body;
-  console.log("SSLCommerz Success Body:", paymentSuccess);
+  const db = await connectDB();
   try {
     if (!paymentSuccess?.val_id) {
       return res
@@ -95,7 +93,6 @@ exports.sslPaymentSuccess = async (req, res) => {
 
     // Step 3: Update payment record in DB
     const query = { transactionId: response.tran_id };
-    const db = await connectDB();
     const result = await db.collection("payments").updateOne(query, {
       $set: {
         status: "success",
@@ -103,8 +100,13 @@ exports.sslPaymentSuccess = async (req, res) => {
         paid_at: new Date(response.tran_date).toISOString(),
       },
     });
-
-    // Step 4: Redirect to frontend
+    // also update appointment status to 'confirmed'
+    const appointmentQuery = { _id: new ObjectId(response.tran_id) };
+    const resultData = await db
+      .collection("appointments")
+      .updateOne(appointmentQuery, {
+        $set: { status: "confirmed" },
+      });
     res.redirect(`http://localhost:5173/payment-success`);
   } catch (error) {
     console.error("Payment validation error:", error);
@@ -116,6 +118,11 @@ exports.sslPaymentSuccess = async (req, res) => {
 };
 
 exports.paymentFail = async (req, res) => {
+  const db = await connectDB();
+  const paymentFail = req.body;
+  //delete the apointment if payment fails
+  const appointmentQuery = { _id: new ObjectId(paymentFail.tran_id) };
+  await db.collection("appointments").deleteOne(appointmentQuery);
   res.redirect("http://localhost:5173/payment-fail");
 };
 
