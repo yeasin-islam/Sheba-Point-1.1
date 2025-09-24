@@ -91,9 +91,6 @@ exports.sslPaymentSuccess = async (req, res) => {
 
     const isValidPayment = await fetch(validationUrl);
     const response = await isValidPayment.json();
-
-    console.log(response);
-
     if (response.status !== "VALID") {
       return res.send({ message: "Invalid Payment" });
     }
@@ -108,8 +105,6 @@ exports.sslPaymentSuccess = async (req, res) => {
         paid_at: new Date(response.tran_date).toISOString(),
       },
     });
-
-    console.log(result);
 
     // Step 4: Redirect to frontend
     res.redirect(`http://localhost:5173/payment-success`);
