@@ -27,7 +27,7 @@ const Navbar = () => {
     { path: "/", label: "Home" },
     { path: "/about", label: "About" },
     { path: "/all-available-doctors", label: "Search Doctors" },
-    { path: "/contact", label: "Contact Us" },
+    { path: "/dashboard", label: "Dashboard" },
   ];
 
   const toggleMenu = () => {

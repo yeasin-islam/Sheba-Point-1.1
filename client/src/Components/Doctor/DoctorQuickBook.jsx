@@ -10,14 +10,15 @@ import {
   classNames,
 } from "../../utils/doctorUtils";
 import useAxios from "../../Hooks/useAxios";
+import useAuth from "../../Hooks/useAuth";
 
 export default function DoctorQuickBook({
   doctor,
   size = "sm",
   variant = "primary",
   className,
-  user = { _id: "1", email: "test@gmail.com" },
 }) {
+  const {user}=useAuth()
   const [open, setOpen] = useState(false);
   const [mode, setMode] = useState("video");
   const [selectedDate, setSelectedDate] = useState("");
@@ -43,6 +44,7 @@ export default function DoctorQuickBook({
     try {
       const bookingData = {
         patientId: user?._id,
+        patientMail: user?.email,
         doctorId: doctor?._id,
         scheduledTime: new Date(
           `${selectedDate.split("T")[0]}T${selectedTime}:00Z`
