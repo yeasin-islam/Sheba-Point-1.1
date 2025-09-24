@@ -43,6 +43,7 @@ export default function DoctorQuickBook({
     try {
       const bookingData = {
         patientId: user?._id,
+        patientMail: user?.email,
         doctorId: doctor?._id,
         scheduledTime: new Date(
           `${selectedDate.split("T")[0]}T${selectedTime}:00Z`

@@ -2,7 +2,6 @@ const connectDB = require("../db/connect");
 
 // This is POST method to createAppointment
 exports.createAppointment = async (req, res) => {
-    console.log(req.body);
     try {
         const db = await connectDB();
         const result = await db.collection("appointments").insertOne(req.body);

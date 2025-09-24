@@ -3,7 +3,6 @@ const connectDB = require("../db/connect");
 
 exports.sslPaymentCreate = async (req, res) => {
   const payment = req.body; // Get payment info from client
-
   // Generate a unique transaction ID for this payment
   const trxid = new ObjectId().toString();
 
@@ -22,8 +21,8 @@ exports.sslPaymentCreate = async (req, res) => {
     store_passwd: process.env.SSL_STORE_PASSWORD, // your store password
     total_amount: payment.amount, // payment amount
     currency: "BDT", // currency (BDT for Taka)
-    tran_id: trxid, // unique transaction ID
-
+    tran_id: payment.appointmentId, // unique transaction ID
+    appointmentId: payment.appointmentId, 
     // Callback URLs
     success_url: "http://localhost:5000/sslPayment/successPayment", // on success
     fail_url: "http://localhost:5000/sslPayment/paymentFail", // on fail
@@ -78,7 +77,6 @@ exports.sslPaymentSuccess = async (req, res) => {
   // Step 1: Get success data sent from SSLCommerz
   const paymentSuccess = req.body;
   console.log("SSLCommerz Success Body:", paymentSuccess);
-
   try {
     if (!paymentSuccess?.val_id) {
       return res
