@@ -1,6 +1,9 @@
 const { ObjectId } = require("mongodb");
 const connectDB = require("../db/connect");
 
+const FRONTEND_URL = process.env.FRONTEND_URL;
+const SERVER_URL = process.env.SERVER_URL || "http://localhost:5000";
+
 exports.sslPaymentCreate = async (req, res) => {
   const payment = req.body; // Get payment info from client
   // Generate a unique transaction ID for this payment
@@ -23,10 +26,10 @@ exports.sslPaymentCreate = async (req, res) => {
     tran_id: payment.appointmentId, // unique transaction ID
     appointmentId: payment.appointmentId,
     // Callback URLs
-    success_url: "http://localhost:5000/sslPayment/successPayment", // on success
-    fail_url: "http://localhost:5000/sslPayment/paymentFail", // on fail
-    cancel_url: "http://localhost:5000/sslPayment/paymentCancel", // on cancel
-    ipn_url: "http://localhost:5000/ipn-success-payment", // instant payment notification
+    success_url: `${SERVER_URL}/sslPayment/successPayment`, // on success
+    fail_url: `${SERVER_URL}/sslPayment/paymentFail`, // on fail
+    cancel_url: `${SERVER_URL}/sslPayment/paymentCancel`, // on cancel
+    ipn_url: `${SERVER_URL}/ipn-success-payment`, // instant payment notification
 
     // Product info (doctor appointment case)
     product_name: "Doctor Appointment",
@@ -107,7 +110,7 @@ exports.sslPaymentSuccess = async (req, res) => {
       .updateOne(appointmentQuery, {
         $set: { status: "confirmed" },
       });
-    res.redirect(`http://localhost:5173/payment-success`);
+    res.redirect(`${FRONTEND_URL}/payment-success`);
   } catch (error) {
     console.error("Payment validation error:", error);
     res.status(500).send({
@@ -123,9 +126,9 @@ exports.paymentFail = async (req, res) => {
   //delete the apointment if payment fails
   const appointmentQuery = { _id: new ObjectId(paymentFail.tran_id) };
   await db.collection("appointments").deleteOne(appointmentQuery);
-  res.redirect("http://localhost:5173/payment-fail");
+  res.redirect(`${FRONTEND_URL}/payment-fail`);
 };
 
 exports.paymentCancel = async (req, res) => {
-  res.redirect("http://localhost:5173/payment-cancel");
+  res.redirect(`${FRONTEND_URL}/payment-cancel`);
 };
