@@ -12,7 +12,13 @@ import {
   FiUsers,
 } from "react-icons/fi";
 import { GiMedicinePills } from "react-icons/gi";
-import { FaAngleLeft, FaAngleRight, FaClipboard, FaTimes, FaUserMd } from "react-icons/fa";
+import {
+  FaAngleLeft,
+  FaAngleRight,
+  FaClipboard,
+  FaTimes,
+  FaUserMd,
+} from "react-icons/fa";
 import { LuCalendarCheck } from "react-icons/lu";
 import { MdOutlineLocalPharmacy } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
@@ -22,25 +28,82 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
 
   // Sidebar navigation routes
   const routes = [
-    { title: "Home", path: "/dashboard", icon: <FiHome className="text-xl" />, end: true },
-    { title: "My Booking", path: "/dashboard/patient/my-booking", icon: <FaClipboard className="text-xl" /> },
-    { title: "Doctor Application", path: "/dashboard/patient/doctor-application", icon: <FaUserDoctor className="text-xl" /> },
-    { title: "Patient Profile", path: "/dashboard/patient/profile", icon: <FiUser className="text-xl" /> },
-    { title: "Appointments", path: "/dashboard/doctor/appointments", icon: <LuCalendarCheck className="text-xl" /> },
-    { title: "Doctor Profile", path: "/dashboard/doctor/profile", icon: <FiUser className="text-xl" /> },
-    { title: "Manage Bookings", path: "/dashboard/doctor/manage-bookings", icon: <FiUser className="text-xl" /> },
-    { title: "Referrals", path: "/dashboard/doctor/referrals", icon: <FiUserPlus className="text-xl" /> },
-    { title: "My Patients", path: "/dashboard/my-patients", icon: <FiUsers className="text-xl" /> },
-    { title: "All Patients", path: "/dashboard/all-patients", icon: <FiUsers className="text-xl" /> },
-    { title: "All Doctors", path: "/dashboard/all-doctors", icon: <FaUserMd className="text-xl" /> },
-    { title: "Report Management", path: "/dashboard/reports", icon: <FiFileText className="text-xl" /> },
-    { title: "Pending Pharmacies & Labs", path: "/dashboard/pending-pharmacies&labs", icon: <MdOutlineLocalPharmacy className="text-xl" /> },
-    { title: "Pending Doctors", path: "/dashboard/pending-doctors", icon: <FiUserCheck className="text-xl" /> },
-    { title: "Admin Profile", path: "/dashboard/admin-profile", icon: <FiSettings className="text-xl" /> },
+    {
+      title: "Home",
+      path: "/dashboard",
+      icon: <FiHome className="text-xl" />,
+      end: true,
+    },
+    {
+      title: "My Booking",
+      path: "/dashboard/patient/my-booking",
+      icon: <FaClipboard className="text-xl" />,
+    },
+    {
+      title: "Doctor Application",
+      path: "/dashboard/patient/doctor-application",
+      icon: <FaUserDoctor className="text-xl" />,
+    },
+    {
+      title: "Patient Profile",
+      path: "/dashboard/patient/profile",
+      icon: <FiUser className="text-xl" />,
+    },
+    {
+      title: "Appointments",
+      path: "/dashboard/doctor/appointments",
+      icon: <LuCalendarCheck className="text-xl" />,
+    },
+    {
+      title: "Doctor Profile",
+      path: "/dashboard/doctor/profile",
+      icon: <FiUser className="text-xl" />,
+    },
+    {
+      title: "Manage Bookings",
+      path: "/dashboard/doctor/manage-bookings",
+      icon: <FiUser className="text-xl" />,
+    },
+    {
+      title: "My Patients",
+      path: "/dashboard/my-patients",
+      icon: <FiUsers className="text-xl" />,
+    },
+    {
+      title: "All Patients",
+      path: "/dashboard/all-patients",
+      icon: <FiUsers className="text-xl" />,
+    },
+    {
+      title: "All Doctors",
+      path: "/dashboard/all-doctors",
+      icon: <FaUserMd className="text-xl" />,
+    },
+    {
+      title: "Report Management",
+      path: "/dashboard/reports",
+      icon: <FiFileText className="text-xl" />,
+    },
+    {
+      title: "Pending Pharmacies & Labs",
+      path: "/dashboard/pending-pharmacies&labs",
+      icon: <MdOutlineLocalPharmacy className="text-xl" />,
+    },
+    {
+      title: "Pending Doctors",
+      path: "/dashboard/pending-doctors",
+      icon: <FiUserCheck className="text-xl" />,
+    },
+    {
+      title: "Admin Profile",
+      path: "/dashboard/admin-profile",
+      icon: <FiSettings className="text-xl" />,
+    },
   ];
 
   // Base styles for links
-  const linkBaseStyle = "flex items-center gap-3 px-3 py-2 rounded-md transition-all";
+  const linkBaseStyle =
+    "flex items-center gap-3 px-3 py-2 rounded-md transition-all";
   const linkCollapsedStyle = "justify-center text-xl"; // Center icon only when collapsed
   const linkExpandedStyle = "text-base"; // Normal text when expanded
 
@@ -67,9 +130,13 @@ const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
                     end={route.end || false} // Only Home uses exact match
                     onClick={() => setIsMobileOpen(false)} // Close sidebar after clicking
                     className={({ isActive }) =>
-                      classNames(linkBaseStyle, "text-gray-700 hover:bg-gray-100", {
-                        "bg-primary/10 text-primary font-medium": isActive,
-                      })
+                      classNames(
+                        linkBaseStyle,
+                        "text-gray-700 hover:bg-gray-100",
+                        {
+                          "bg-primary/10 text-primary font-medium": isActive,
+                        }
+                      )
                     }
                   >
                     <span className="text-lg">{route.icon}</span>
