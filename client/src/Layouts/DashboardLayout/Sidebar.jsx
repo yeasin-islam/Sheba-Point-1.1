@@ -24,9 +24,7 @@ import { MdOutlineLocalPharmacy } from "react-icons/md";
 import { FaUserDoctor } from "react-icons/fa6";
 
 const Sidebar = ({ isMobileOpen, setIsMobileOpen }) => {
-  const [isCollapsed, setIsCollapsed] = useState(true); // Controls collapse state for desktop sidebar
-
-  // Sidebar navigation routes
+  const [isCollapsed, setIsCollapsed] = useState(true); 
   const routes = [
     {
       title: "Home",
