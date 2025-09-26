@@ -8,7 +8,7 @@ const AllDoctor = ({ doctorsData }) => {
   const colors = {
     primary: "#209187",
     secondary: "#1f2937",
-    background: "#f9fafb",
+    background: "#ffffff",
     card: "#ffffff",
     accent: "#f3f4f6",
     active: "#10b981",
@@ -83,16 +83,22 @@ const AllDoctor = ({ doctorsData }) => {
     });
 
     setFilteredDoctors(sortDoctors(filtered));
-  }, [searchTerm, sortBy, allDoctors, genderFilter, languageFilter, activeStatusFilter]);
+  }, [searchTerm, sortBy, allDoctors, genderFilter, languageFilter, activeStatusFilter, sortDoctors]);
 
   // Grid/List card component
   const DoctorCard = ({ doc }) => {
     const isNew = new Date(doc.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
     return (
       <div
-        className={`flex flex-col ${view === "list" ? "sm:flex-row" : ""} bg-white border rounded-2xl shadow hover:shadow-lg transition-shadow duration-300 overflow-hidden`}
+        className={`flex flex-col ${
+          view === "list" ? "sm:flex-row" : ""
+        } bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-shadow duration-300 overflow-hidden`}
       >
-        <div className={`relative ${view === "list" ? "sm:w-52 sm:h-52 w-full h-64" : "w-full h-64"}`}>
+        <div
+          className={`relative ${
+            view === "list" ? "sm:w-52 sm:h-52 w-full h-64" : "w-full h-64"
+          }`}
+        >
           <img
             src={doc.profileImage}
             alt={doc.name}
@@ -111,7 +117,9 @@ const AllDoctor = ({ doctorsData }) => {
           {/* Active Status */}
           <div
             className={`absolute bottom-2 left-2 px-3 py-1 rounded-full text-xs font-bold shadow ${
-              doc.activeStatus === "active" ? "bg-green-500 text-white" : "bg-gray-400 text-white"
+              doc.activeStatus === "active"
+                ? "bg-green-500 text-white"
+                : "bg-gray-400 text-white"
             }`}
           >
             {doc.activeStatus === "active" ? "Active" : "Inactive"}
@@ -120,14 +128,20 @@ const AllDoctor = ({ doctorsData }) => {
         {/* Content */}
         <div className="flex flex-col justify-between p-4 flex-grow">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 truncate">{doc.name}</h3>
+            <h3 className="text-lg font-bold text-gray-900 truncate">
+              {doc.name}
+            </h3>
             <p className="flex items-center text-sm font-medium text-teal-600 mt-1 truncate">
               📍 {doc.address}
             </p>
-            <p className="mt-2 text-sm text-gray-600 truncate">{doc.specialties?.join(", ")}</p>
+            <p className="mt-2 text-sm text-gray-600 truncate">
+              {doc.specialties?.join(", ")}
+            </p>
           </div>
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-semibold text-teal-600">{doc.experienceYears} yrs exp</span>
+            <span className="text-sm font-semibold text-teal-600">
+              {doc.experienceYears} yrs exp
+            </span>
             <Link
               to={`/doctor-details-page/${doc._id}`}
               className="px-4 py-2 rounded-full text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 transition-colors"

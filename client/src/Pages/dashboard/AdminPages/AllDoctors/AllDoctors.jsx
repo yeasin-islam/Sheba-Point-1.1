@@ -148,7 +148,7 @@ const AllDoctors = () => {
   ];
 
   return (
-    <section className="container mx-auto p-6 bg-white rounded-xl shadow-md">
+    <section className="container mx-auto p-6">
       <h2 className="text-xl font-semibold mb-4">List of Doctors</h2>
       <div className="hidden md:block">
         <DataTable data={doctors} columns={columns} />
