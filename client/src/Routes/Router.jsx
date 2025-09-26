@@ -4,7 +4,6 @@ import Home from "../pages/Home/Home/Home";
 import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
 import Appointments from "../pages/Dashboard/DoctorsPages/Appointments/Appointments";
-import Referrals from "../pages/Dashboard/DoctorsPages/Referrals/Referrals";
 import DoctorsPatient from "../pages/Dashboard/DoctorsPages/DoctorsPatient/DoctorsPatient";
 import DoctorConsulation from "../pages/Dashboard/DoctorsPages/DoctorConsultation/DoctorConsultation";
 import PatientConsultation from "../pages/Dashboard/PatientsPages/PatientConsultation/PatientConsultation";
@@ -123,10 +122,6 @@ export const router = createBrowserRouter([
       {
         path: "doctor/consultation/:consultationId",
         element: <DoctorConsulation />,
-      },
-      {
-        path: "doctor/referrals",
-        element: <Referrals />,
       },
       {
         path: "doctor/manage-bookings",
