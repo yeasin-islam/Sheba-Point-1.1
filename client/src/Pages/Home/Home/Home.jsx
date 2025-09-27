@@ -4,6 +4,7 @@ import TopRatedDoctors from '../TopRatedDoctors/TopRatedDoctors';
 import OfferSection from '../OfferSection/OfferSection';
 import ServicesSection from '../Services/ServicesSection';
 import TopSpecialties from '../TopSpecialties/TopSpecialties';
+import MarqueeSection from '../MarqueeSection/MarqueeSection';
 
 const Home = () => {
     return (
@@ -12,6 +13,7 @@ const Home = () => {
             <ServicesSection />
             <TopSpecialties />
             <TopRatedDoctors />
+            <MarqueeSection />
             <OfferSection />
         </div>
     );
