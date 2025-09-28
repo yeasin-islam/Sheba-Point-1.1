@@ -95,7 +95,7 @@ exports.rejectDoctorApplication = async (req, res) => {
   }
 };
 exports.patientProfileUpdate = async (req, res) => {
-  const db=await connectDB()
+  const db = await connectDB();
   const { email, ...formData } = req.body;
   if (!email) return res.status(400).json({ message: "Email is required" });
 
@@ -107,14 +107,10 @@ exports.patientProfileUpdate = async (req, res) => {
           ...formData,
           updatedAt: new Date(),
         },
-      },
+      }
     );
-    
-    res.json({
-      success: true,
-      message: "Profile updated successfully",
-      result,
-    });
+
+    res.json(result);
   } catch (error) {
     res.status(500).json({ message: "Update failed", error });
   }

@@ -12,10 +12,12 @@ import {
 } from "lucide-react";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import { toast } from 'react-hot-toast';
 
 const PatientProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+
   const [patient, setPatient] = useState({
     name: user?.name || "Unnamed",
     age: user?.age || "",
@@ -26,13 +28,11 @@ const PatientProfile = () => {
     allergies: user?.allergies || "",
     conditions: user?.conditions || "",
     medications: user?.medications || "",
-    profileImage:
-      user?.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png",
+    profileImage: user?.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png",
     lastLogin: user?.lastLogin || "",
     createdAt: user?.createdAt || "",
     role: user?.role || "patient",
   });
-console.log(patient);
   const [isEditing, setIsEditing] = useState({
     profile: false,
     medical: false,
@@ -41,42 +41,63 @@ console.log(patient);
 
   const [formData, setFormData] = useState(patient);
 
-  // Static sample appointments
+  // Sample appointments
   const upcomingAppointments = [
-    {
-      id: 1,
-      doctor: "Dr. Sarah Johnson",
-      date: "2025-08-25",
-      time: "4:00 PM",
-      status: "Confirmed",
-    },
-    {
-      id: 2,
-      doctor: "Dr. Ahmed Hossain",
-      date: "2025-09-01",
-      time: "11:30 AM",
-      status: "Pending",
-    },
+    { id: 1, doctor: "Dr. Sarah Johnson", date: "2025-08-25", time: "4:00 PM", status: "Confirmed" },
+    { id: 2, doctor: "Dr. Ahmed Hossain", date: "2025-09-01", time: "11:30 AM", status: "Pending" },
   ];
 
   const pastAppointments = [
-    {
-      id: 1,
-      doctor: "Dr. Emily White",
-      date: "2025-07-20",
-      prescription: "prescription1.pdf",
-    },
+    { id: 1, doctor: "Dr. Emily White", date: "2025-07-20", prescription: "prescription1.pdf" },
   ];
 
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Validation + Save
   const handleSave = async (section) => {
-    setPatient(formData);
-    setIsEditing({ ...isEditing, [section]: false });
-    const res = await axiosSecure.patch(`/patients/${user?.email}`, formData);
-    console.log(res.data);
+    if (section === "profile") {
+      if (!formData.name.trim()) {
+        toast.error("Name is required");
+        return;
+      }
+      if (formData.age && (isNaN(formData.age) || formData.age <= 0)) {
+        toast.error("Age must be a valid positive number");
+        return;
+      }
+      // Prevent email change
+      formData.email = patient.email;
+    }
+
+    if (section === "medical") {
+      if (formData.allergies.length > 100) {
+        toast.error("Allergies field too long");
+        return;
+      }
+    }
+
+    if (section === "payment") {
+      if (
+        formData.paymentStatus &&
+        !["Paid", "Unpaid", "Pending"].includes(formData.paymentStatus)
+      ) {
+        toast.error("Invalid payment status");
+        return;
+      }
+    }
+
+    try {
+      setPatient(formData);
+      setIsEditing({ ...isEditing, [section]: false });
+      const res = await axiosSecure.patch(`/patients/${user?.email}`, formData);
+      if (res.data.modifiedCount > 0) {
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Update failed, please try again.");
+    }
   };
 
   return (
@@ -85,7 +106,7 @@ console.log(patient);
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 h-40 sm:h-48 rounded-b-3xl relative">
         <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-28">
           <img
-            src={patient.profileImage}
+            src={patient.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png"}
             alt="Patient"
             className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-lg object-cover"
           />
@@ -101,10 +122,8 @@ console.log(patient);
                 {patient.name}
               </h2>
               <p className="text-gray-500 mt-1">
-                {patient.age
-                  ? `${patient.age} yrs`
-                  : "Age not set"}{" "}
-                | {patient.gender || "Gender not set"} | Blood Group:{" "}
+                {patient.age ? `${patient.age} yrs` : "Age not set"} |{" "}
+                {patient.gender || "Gender not set"} | Blood Group:{" "}
                 {patient.bloodGroup || "N/A"}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-4 text-gray-600 text-sm sm:text-base">
@@ -162,8 +181,8 @@ console.log(patient);
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
+                disabled
+                className="w-full border rounded-lg p-2 bg-gray-100 cursor-not-allowed"
                 placeholder="Email"
               />
               <input
@@ -182,9 +201,7 @@ console.log(patient);
                   <Save size={18} /> Save
                 </button>
                 <button
-                  onClick={() =>
-                    setIsEditing({ ...isEditing, profile: false })
-                  }
+                  onClick={() => setIsEditing({ ...isEditing, profile: false })}
                   className="px-6 py-2 bg-gray-300 text-gray-800 rounded-xl shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={18} /> Cancel
@@ -201,15 +218,9 @@ console.log(patient);
           </h3>
           {!isEditing.medical ? (
             <>
-              <p>
-                <strong>Allergies:</strong> {patient.allergies || "Not set"}
-              </p>
-              <p>
-                <strong>Conditions:</strong> {patient.conditions || "Not set"}
-              </p>
-              <p>
-                <strong>Medications:</strong> {patient.medications || "Not set"}
-              </p>
+              <p><strong>Allergies:</strong> {patient.allergies || "Not set"}</p>
+              <p><strong>Conditions:</strong> {patient.conditions || "Not set"}</p>
+              <p><strong>Medications:</strong> {patient.medications || "Not set"}</p>
               <button
                 onClick={() => setIsEditing({ ...isEditing, medical: true })}
                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition flex items-center gap-2"
@@ -251,9 +262,7 @@ console.log(patient);
                   <Save size={16} /> Save
                 </button>
                 <button
-                  onClick={() =>
-                    setIsEditing({ ...isEditing, medical: false })
-                  }
+                  onClick={() => setIsEditing({ ...isEditing, medical: false })}
                   className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={16} /> Cancel
@@ -289,12 +298,16 @@ console.log(patient);
               <input
                 type="text"
                 name="paymentStatus"
+                value={formData.paymentStatus || ""}
+                onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 placeholder="Payment status (e.g., Paid)"
               />
               <input
                 type="date"
                 name="lastPayment"
+                value={formData.lastPayment || ""}
+                onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 placeholder="Last Payment Date"
               />
@@ -306,9 +319,7 @@ console.log(patient);
                   <Save size={16} /> Save
                 </button>
                 <button
-                  onClick={() =>
-                    setIsEditing({ ...isEditing, payment: false })
-                  }
+                  onClick={() => setIsEditing({ ...isEditing, payment: false })}
                   className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={16} /> Cancel
