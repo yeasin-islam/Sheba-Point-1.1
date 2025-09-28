@@ -9,10 +9,12 @@ import {
   Edit,
   Save,
   X,
+  Upload,
 } from "lucide-react";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
-import { toast } from 'react-hot-toast';
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const PatientProfile = () => {
   const { user } = useAuth();
@@ -28,11 +30,13 @@ const PatientProfile = () => {
     allergies: user?.allergies || "",
     conditions: user?.conditions || "",
     medications: user?.medications || "",
-    profileImage: user?.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png",
+    profileImage:
+      user?.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png",
     lastLogin: user?.lastLogin || "",
     createdAt: user?.createdAt || "",
     role: user?.role || "patient",
   });
+
   const [isEditing, setIsEditing] = useState({
     profile: false,
     medical: false,
@@ -41,18 +45,67 @@ const PatientProfile = () => {
 
   const [formData, setFormData] = useState(patient);
 
-  // Sample appointments
+  // Profile image state
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(patient.profileImage);
+
+  // Appointments (dummy)
   const upcomingAppointments = [
-    { id: 1, doctor: "Dr. Sarah Johnson", date: "2025-08-25", time: "4:00 PM", status: "Confirmed" },
-    { id: 2, doctor: "Dr. Ahmed Hossain", date: "2025-09-01", time: "11:30 AM", status: "Pending" },
+    {
+      id: 1,
+      doctor: "Dr. Sarah Johnson",
+      date: "2025-08-25",
+      time: "4:00 PM",
+      status: "Confirmed",
+    },
+    {
+      id: 2,
+      doctor: "Dr. Ahmed Hossain",
+      date: "2025-09-01",
+      time: "11:30 AM",
+      status: "Pending",
+    },
   ];
 
   const pastAppointments = [
-    { id: 1, doctor: "Dr. Emily White", date: "2025-07-20", prescription: "prescription1.pdf" },
+    {
+      id: 1,
+      doctor: "Dr. Emily White",
+      date: "2025-07-20",
+      prescription: "prescription1.pdf",
+    },
   ];
 
+  // Input change handler
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  // Image upload handler
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      const formDataImg = new FormData();
+      formDataImg.append("image", file);
+
+      axios
+        .post(
+          `https://api.imgbb.com/1/upload?key=${
+            import.meta.env.VITE_IMMGBB_API_KEY
+          }`,
+          formDataImg
+        )
+        .then((response) => {
+          if (response.data.success) {
+            setImage(response.data.data.url);
+            toast.success("Image uploaded successfully");
+          } else {
+            toast.error("Image upload failed");
+          }
+        })
+        .catch(() => toast.error("Image upload failed"));
+    }
   };
 
   // Validation + Save
@@ -68,6 +121,11 @@ const PatientProfile = () => {
       }
       // Prevent email change
       formData.email = patient.email;
+
+      // If image uploaded, attach to formData
+      if (image) {
+        formData.profileImage = image;
+      }
     }
 
     if (section === "medical") {
@@ -90,7 +148,11 @@ const PatientProfile = () => {
     try {
       setPatient(formData);
       setIsEditing({ ...isEditing, [section]: false });
-      const res = await axiosSecure.patch(`/patients/${user?.email}`, formData);
+
+      const res = await axiosSecure.patch(
+        `/patients/${user?.email}`,
+        formData
+      );
       if (res.data.modifiedCount > 0) {
         toast.success("Profile updated successfully");
       }
@@ -105,11 +167,28 @@ const PatientProfile = () => {
       {/* Banner */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 h-40 sm:h-48 rounded-b-3xl relative">
         <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-28">
-          <img
-            src={patient.profileImage || "https://i.ibb.co/7yz3b2J/avatar.png"}
-            alt="Patient"
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-lg object-cover"
-          />
+          <div className="relative">
+            <img
+              src={preview}
+              alt="Patient"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-lg object-cover"
+            />
+            {isEditing.profile && (
+              <label
+                htmlFor="profileImage"
+                className="absolute bottom-0 right-0 bg-teal-600 text-white p-2 rounded-full cursor-pointer hover:bg-teal-700 shadow"
+              >
+                <Upload size={16} />
+                <input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
         </div>
       </div>
 
@@ -135,7 +214,9 @@ const PatientProfile = () => {
                 </p>
               </div>
               <button
-                onClick={() => setIsEditing({ ...isEditing, profile: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, profile: true })
+                }
                 className="mt-6 px-6 py-2 bg-teal-600 text-white rounded-xl shadow hover:bg-teal-700 transition flex items-center gap-2 mx-auto"
               >
                 <Edit size={18} /> Edit Profile
@@ -201,7 +282,9 @@ const PatientProfile = () => {
                   <Save size={18} /> Save
                 </button>
                 <button
-                  onClick={() => setIsEditing({ ...isEditing, profile: false })}
+                  onClick={() =>
+                    setIsEditing({ ...isEditing, profile: false })
+                  }
                   className="px-6 py-2 bg-gray-300 text-gray-800 rounded-xl shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={18} /> Cancel
@@ -218,11 +301,21 @@ const PatientProfile = () => {
           </h3>
           {!isEditing.medical ? (
             <>
-              <p><strong>Allergies:</strong> {patient.allergies || "Not set"}</p>
-              <p><strong>Conditions:</strong> {patient.conditions || "Not set"}</p>
-              <p><strong>Medications:</strong> {patient.medications || "Not set"}</p>
+              <p>
+                <strong>Allergies:</strong> {patient.allergies || "Not set"}
+              </p>
+              <p>
+                <strong>Conditions:</strong>{" "}
+                {patient.conditions || "Not set"}
+              </p>
+              <p>
+                <strong>Medications:</strong>{" "}
+                {patient.medications || "Not set"}
+              </p>
               <button
-                onClick={() => setIsEditing({ ...isEditing, medical: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, medical: true })
+                }
                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition flex items-center gap-2"
               >
                 <Edit size={16} /> Edit Medical Info
@@ -262,7 +355,9 @@ const PatientProfile = () => {
                   <Save size={16} /> Save
                 </button>
                 <button
-                  onClick={() => setIsEditing({ ...isEditing, medical: false })}
+                  onClick={() =>
+                    setIsEditing({ ...isEditing, medical: false })
+                  }
                   className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={16} /> Cancel
@@ -287,7 +382,9 @@ const PatientProfile = () => {
                   : "N/A"}
               </p>
               <button
-                onClick={() => setIsEditing({ ...isEditing, payment: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, payment: true })
+                }
                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition flex items-center gap-2"
               >
                 <Edit size={16} /> Edit Payment Info
@@ -319,7 +416,9 @@ const PatientProfile = () => {
                   <Save size={16} /> Save
                 </button>
                 <button
-                  onClick={() => setIsEditing({ ...isEditing, payment: false })}
+                  onClick={() =>
+                    setIsEditing({ ...isEditing, payment: false })
+                  }
                   className="px-4 py-2 bg-gray-300 text-gray-800 rounded-lg shadow hover:bg-gray-400 flex items-center gap-2"
                 >
                   <X size={16} /> Cancel
