@@ -2,19 +2,7 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router";
 import axios from "axios";
 
-const AllDoctor = ({ doctorsData }) => {
-  
-  // Theme colors
-  const colors = {
-    primary: "#209187",
-    secondary: "#1f2937",
-    background: "#ffffff",
-    card: "#ffffff",
-    accent: "#f3f4f6",
-    active: "#10b981",
-    inactive: "#9ca3af",
-  };
-
+const AllDoctor = () => {
   const [allDoctors, setAllDoctors] = useState([]);
   const [filteredDoctors, setFilteredDoctors] = useState([]);
   const [view, setView] = useState("grid");
@@ -34,7 +22,7 @@ const AllDoctor = ({ doctorsData }) => {
         setAllDoctors(res.data || []);
         setFilteredDoctors(res.data || []);
       } catch (err) {
-        console.error(err);
+        console.error("Failed to fetch doctors:", err);
         setAllDoctors([]);
         setFilteredDoctors([]);
       } finally {
@@ -44,15 +32,7 @@ const AllDoctor = ({ doctorsData }) => {
     fetchDoctors();
   }, []);
 
-  // Update doctors if doctorsData prop changes
-  useEffect(() => {
-    if (doctorsData && Array.isArray(doctorsData)) {
-      setAllDoctors(doctorsData);
-      setFilteredDoctors(doctorsData);
-    }
-  }, [doctorsData]);
-
-  // Sorting function
+  // Sort doctors
   const sortDoctors = (doctors) => {
     const sorted = [...doctors];
     if (sortBy === "high-rating") return sorted.sort((a, b) => b.ratings - a.ratings);
@@ -60,10 +40,8 @@ const AllDoctor = ({ doctorsData }) => {
     return sorted;
   };
 
-  // Filtering doctors
+  // Apply search + filters whenever inputs change
   useEffect(() => {
-    if (!allDoctors) return;
-
     const filtered = allDoctors.filter((doc) => {
       const search = searchTerm.toLowerCase();
       const matchesSearch =
@@ -83,68 +61,61 @@ const AllDoctor = ({ doctorsData }) => {
     });
 
     setFilteredDoctors(sortDoctors(filtered));
-  }, [searchTerm, sortBy, allDoctors, genderFilter, languageFilter, activeStatusFilter, sortDoctors]);
+  }, [searchTerm, sortBy, allDoctors, genderFilter, languageFilter, activeStatusFilter]);
 
-  // Grid/List card component
+  // Doctor card (grid/list view)
   const DoctorCard = ({ doc }) => {
     const isNew = new Date(doc.createdAt) > new Date(Date.now() - 7 * 24 * 60 * 60 * 1000);
+
     return (
       <div
         className={`flex flex-col ${
           view === "list" ? "sm:flex-row" : ""
-        } bg-white border border-gray-200 rounded-xl shadow hover:shadow-lg transition-shadow duration-300 overflow-hidden`}
+        } bg-white border rounded-xl shadow hover:shadow-lg transition overflow-hidden`}
       >
+        {/* Doctor Image */}
         <div
-          className={`relative ${
-            view === "list" ? "sm:w-52 sm:h-52 w-full h-64" : "w-full h-64"
-          }`}
+          className={`relative ${view === "list" ? "sm:w-52 sm:h-52 w-full h-64" : "w-full h-64"}`}
         >
-          <img
-            src={doc.profileImage}
-            alt={doc.name}
-            className="w-full h-full object-cover"
-          />
+          <img src={doc.profileImage} alt={doc.name} className="w-full h-full object-cover" />
+
           {/* Rating */}
           <div className="absolute top-2 left-2 flex items-center bg-yellow-500 px-2 py-1 rounded text-white text-sm font-semibold shadow">
             ⭐ {doc.ratings?.toFixed(1)}
           </div>
-          {/* NEW Badge */}
+
+          {/* NEW badge */}
           {isNew && (
             <div className="absolute top-2 right-2 bg-green-500 text-white px-3 py-1 rounded-full text-xs font-bold shadow">
               NEW
             </div>
           )}
-          {/* Active Status */}
+
+          {/* Active status */}
           <div
             className={`absolute bottom-2 left-2 px-3 py-1 rounded-full text-xs font-bold shadow ${
-              doc.activeStatus === "active"
-                ? "bg-green-500 text-white"
-                : "bg-gray-400 text-white"
-            }`}
+              doc.activeStatus === "active" ? "bg-green-500" : "bg-gray-400"
+            } text-white`}
           >
             {doc.activeStatus === "active" ? "Active" : "Inactive"}
           </div>
         </div>
-        {/* Content */}
+
+        {/* Doctor Info */}
         <div className="flex flex-col justify-between p-4 flex-grow">
           <div>
-            <h3 className="text-lg font-bold text-gray-900 truncate">
-              {doc.name}
-            </h3>
+            <h3 className="text-lg font-bold text-gray-900 truncate">{doc.name}</h3>
             <p className="flex items-center text-sm font-medium text-teal-600 mt-1 truncate">
               📍 {doc.address}
             </p>
-            <p className="mt-2 text-sm text-gray-600 truncate">
-              {doc.specialties?.join(", ")}
-            </p>
+            <p className="mt-2 text-sm text-gray-600 truncate">{doc.specialties?.join(", ")}</p>
           </div>
+
           <div className="mt-4 flex items-center justify-between">
-            <span className="text-sm font-semibold text-teal-600">
-              {doc.experienceYears} yrs exp
-            </span>
+            <span className="text-sm font-semibold text-teal-600">{doc.experienceYears} yrs exp</span>
             <Link
               to={`/doctor-details-page/${doc._id}`}
-              className="px-4 py-2 rounded-full text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 transition-colors"
+              className="px-4 py-2 rounded-full text-sm font-medium bg-teal-600 text-white hover:bg-teal-700 transition"
             >
               Details
             </Link>
@@ -155,7 +126,7 @@ const AllDoctor = ({ doctorsData }) => {
   };
 
   return (
-    <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12" style={{ backgroundColor: colors.background }}>
+    <div className="container mx-auto px-4 md:px-6 lg:px-8 py-12 bg-white">
       {/* Header */}
       <div className="text-center mb-8">
         <h1 className="text-4xl md:text-5xl font-bold text-teal-600">All Doctors</h1>
@@ -169,8 +140,8 @@ const AllDoctor = ({ doctorsData }) => {
       </div>
 
       <div className="flex flex-col lg:flex-row gap-8">
-        {/* Filters Sidebar */}
-        <aside className="w-full lg:w-64 p-5 rounded-xl shadow-md border bg-white border-gray-200">
+        {/* Filters */}
+        <aside className="w-full lg:w-64 p-5 rounded-xl shadow-md border bg-white">
           <h2 className="text-xl font-bold mb-4 text-teal-600">Filters</h2>
 
           {/* Search */}
@@ -233,20 +204,24 @@ const AllDoctor = ({ doctorsData }) => {
           <div className="flex items-center gap-3 mt-2">
             <button
               onClick={() => setView("list")}
-              className={`w-10 h-10 rounded-lg border ${view === "list" ? "bg-teal-600 text-white" : "bg-white text-gray-600"} transition`}
+              className={`w-10 h-10 rounded-lg border ${
+                view === "list" ? "bg-teal-600 text-white" : "bg-white text-gray-600"
+              }`}
             >
               📄
             </button>
             <button
               onClick={() => setView("grid")}
-              className={`w-10 h-10 rounded-lg border ${view === "grid" ? "bg-teal-600 text-white" : "bg-white text-gray-600"} transition`}
+              className={`w-10 h-10 rounded-lg border ${
+                view === "grid" ? "bg-teal-600 text-white" : "bg-white text-gray-600"
+              }`}
             >
               🔳
             </button>
           </div>
         </aside>
 
-        {/* Main Content */}
+        {/* Main content */}
         <div className="flex-1 grid gap-6 sm:grid-cols-2 md:grid-cols-3">
           {loading ? (
             <p>Loading doctors...</p>
