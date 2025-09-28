@@ -108,20 +108,20 @@ const Navbar = () => {
                     aria-expanded={isProfileOpen}
                     aria-haspopup="true"
                   >
-                    {user.photoURL ? (
+                    {user.profileImage ? (
                       <img
-                        src={user.photoURL}
+                        src={user.profileImage}
                         alt="User avatar"
                         className="h-9 w-9 rounded-full object-cover border border-white/40"
                       />
                     ) : (
                       <div className="h-9 w-9 rounded-full bg-[#049CA0] text-white flex items-center justify-center font-medium">
-                        {(user.displayName || user.name || "U")
-                          .split(" ")
-                          .map((n) => n[0])
-                          .slice(0, 2)
-                          .join("")
-                          .toUpperCase()}
+                        <img
+                          src={`https://ui-avatars.com/api/?name=${
+                            user?.name || "Sheba User"
+                          }&background=random&color=fff&bold=true`}
+                          alt=""
+                        />
                       </div>
                     )}
                   </button>
@@ -130,20 +130,20 @@ const Navbar = () => {
                     <div className="absolute right-0 mt-2 w-56 bg-white/95 backdrop-blur-sm rounded-md z-30 overflow-hidden">
                       <div className="px-4 py-3 border-b border-slate-100">
                         <div className="flex items-center gap-3">
-                          {user.photoURL ? (
+                          {user.profileImage ? (
                             <img
-                              src={user.photoURL}
+                              src={user.profileImage}
                               alt="avatar"
                               className="h-10 w-10 rounded-full object-cover"
                             />
                           ) : (
                             <div className="h-10 w-10 rounded-full bg-[#049CA0] text-white flex items-center justify-center font-medium">
-                              {(user.displayName || user.name || "U")
-                                .split(" ")
-                                .map((n) => n[0])
-                                .slice(0, 2)
-                                .join("")
-                                .toUpperCase()}
+                              <img
+                                src={`https://ui-avatars.com/api/?name=${
+                                  user?.name || "Sheba User"
+                                }&background=random&color=fff&bold=true`}
+                                alt=""
+                              />
                             </div>
                           )}
                           <div>

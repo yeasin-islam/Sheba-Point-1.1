@@ -9,13 +9,17 @@ import {
   Edit,
   Save,
   X,
+  Upload,
 } from "lucide-react";
 import useAuth from "../../../../Hooks/useAuth";
 import useAxiosSecure from "../../../../Hooks/useAxiosSecure";
+import { toast } from "react-hot-toast";
+import axios from "axios";
 
 const PatientProfile = () => {
   const { user } = useAuth();
   const axiosSecure = useAxiosSecure();
+
   const [patient, setPatient] = useState({
     name: user?.name || "Unnamed",
     age: user?.age || "",
@@ -32,7 +36,7 @@ const PatientProfile = () => {
     createdAt: user?.createdAt || "",
     role: user?.role || "patient",
   });
-console.log(patient);
+
   const [isEditing, setIsEditing] = useState({
     profile: false,
     medical: false,
@@ -41,7 +45,11 @@ console.log(patient);
 
   const [formData, setFormData] = useState(patient);
 
-  // Static sample appointments
+  // Profile image state
+  const [image, setImage] = useState(null);
+  const [preview, setPreview] = useState(patient.profileImage);
+
+  // Appointments (dummy)
   const upcomingAppointments = [
     {
       id: 1,
@@ -68,15 +76,90 @@ console.log(patient);
     },
   ];
 
+  // Input change handler
   const handleChange = (e) => {
     setFormData({ ...formData, [e.target.name]: e.target.value });
   };
 
+  // Image upload handler
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setPreview(URL.createObjectURL(file));
+      const formDataImg = new FormData();
+      formDataImg.append("image", file);
+
+      axios
+        .post(
+          `https://api.imgbb.com/1/upload?key=${
+            import.meta.env.VITE_IMMGBB_API_KEY
+          }`,
+          formDataImg
+        )
+        .then((response) => {
+          if (response.data.success) {
+            setImage(response.data.data.url);
+            toast.success("Image uploaded successfully");
+          } else {
+            toast.error("Image upload failed");
+          }
+        })
+        .catch(() => toast.error("Image upload failed"));
+    }
+  };
+
+  // Validation + Save
   const handleSave = async (section) => {
-    setPatient(formData);
-    setIsEditing({ ...isEditing, [section]: false });
-    const res = await axiosSecure.patch(`/patients/${user?.email}`, formData);
-    console.log(res.data);
+    if (section === "profile") {
+      if (!formData.name.trim()) {
+        toast.error("Name is required");
+        return;
+      }
+      if (formData.age && (isNaN(formData.age) || formData.age <= 0)) {
+        toast.error("Age must be a valid positive number");
+        return;
+      }
+      // Prevent email change
+      formData.email = patient.email;
+
+      // If image uploaded, attach to formData
+      if (image) {
+        formData.profileImage = image;
+      }
+    }
+
+    if (section === "medical") {
+      if (formData.allergies.length > 100) {
+        toast.error("Allergies field too long");
+        return;
+      }
+    }
+
+    if (section === "payment") {
+      if (
+        formData.paymentStatus &&
+        !["Paid", "Unpaid", "Pending"].includes(formData.paymentStatus)
+      ) {
+        toast.error("Invalid payment status");
+        return;
+      }
+    }
+
+    try {
+      setPatient(formData);
+      setIsEditing({ ...isEditing, [section]: false });
+
+      const res = await axiosSecure.patch(
+        `/patients/${user?.email}`,
+        formData
+      );
+      if (res.data.modifiedCount > 0) {
+        toast.success("Profile updated successfully");
+      }
+    } catch (error) {
+      console.error(error);
+      toast.error("Update failed, please try again.");
+    }
   };
 
   return (
@@ -84,11 +167,28 @@ console.log(patient);
       {/* Banner */}
       <div className="bg-gradient-to-r from-teal-600 to-teal-700 h-40 sm:h-48 rounded-b-3xl relative">
         <div className="absolute left-1/2 transform -translate-x-1/2 top-20 sm:top-28">
-          <img
-            src={patient.profileImage}
-            alt="Patient"
-            className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-lg object-cover"
-          />
+          <div className="relative">
+            <img
+              src={preview}
+              alt="Patient"
+              className="w-24 h-24 sm:w-28 sm:h-28 rounded-full border-4 border-white shadow-lg object-cover"
+            />
+            {isEditing.profile && (
+              <label
+                htmlFor="profileImage"
+                className="absolute bottom-0 right-0 bg-teal-600 text-white p-2 rounded-full cursor-pointer hover:bg-teal-700 shadow"
+              >
+                <Upload size={16} />
+                <input
+                  id="profileImage"
+                  type="file"
+                  accept="image/*"
+                  onChange={handleImageChange}
+                  className="hidden"
+                />
+              </label>
+            )}
+          </div>
         </div>
       </div>
 
@@ -101,10 +201,8 @@ console.log(patient);
                 {patient.name}
               </h2>
               <p className="text-gray-500 mt-1">
-                {patient.age
-                  ? `${patient.age} yrs`
-                  : "Age not set"}{" "}
-                | {patient.gender || "Gender not set"} | Blood Group:{" "}
+                {patient.age ? `${patient.age} yrs` : "Age not set"} |{" "}
+                {patient.gender || "Gender not set"} | Blood Group:{" "}
                 {patient.bloodGroup || "N/A"}
               </p>
               <div className="flex flex-col sm:flex-row justify-center gap-4 sm:gap-6 mt-4 text-gray-600 text-sm sm:text-base">
@@ -116,7 +214,9 @@ console.log(patient);
                 </p>
               </div>
               <button
-                onClick={() => setIsEditing({ ...isEditing, profile: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, profile: true })
+                }
                 className="mt-6 px-6 py-2 bg-teal-600 text-white rounded-xl shadow hover:bg-teal-700 transition flex items-center gap-2 mx-auto"
               >
                 <Edit size={18} /> Edit Profile
@@ -162,8 +262,8 @@ console.log(patient);
                 type="email"
                 name="email"
                 value={formData.email}
-                onChange={handleChange}
-                className="w-full border rounded-lg p-2"
+                disabled
+                className="w-full border rounded-lg p-2 bg-gray-100 cursor-not-allowed"
                 placeholder="Email"
               />
               <input
@@ -205,13 +305,17 @@ console.log(patient);
                 <strong>Allergies:</strong> {patient.allergies || "Not set"}
               </p>
               <p>
-                <strong>Conditions:</strong> {patient.conditions || "Not set"}
+                <strong>Conditions:</strong>{" "}
+                {patient.conditions || "Not set"}
               </p>
               <p>
-                <strong>Medications:</strong> {patient.medications || "Not set"}
+                <strong>Medications:</strong>{" "}
+                {patient.medications || "Not set"}
               </p>
               <button
-                onClick={() => setIsEditing({ ...isEditing, medical: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, medical: true })
+                }
                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition flex items-center gap-2"
               >
                 <Edit size={16} /> Edit Medical Info
@@ -278,7 +382,9 @@ console.log(patient);
                   : "N/A"}
               </p>
               <button
-                onClick={() => setIsEditing({ ...isEditing, payment: true })}
+                onClick={() =>
+                  setIsEditing({ ...isEditing, payment: true })
+                }
                 className="mt-4 px-4 py-2 bg-teal-600 text-white rounded-lg shadow hover:bg-teal-700 transition flex items-center gap-2"
               >
                 <Edit size={16} /> Edit Payment Info
@@ -289,12 +395,16 @@ console.log(patient);
               <input
                 type="text"
                 name="paymentStatus"
+                value={formData.paymentStatus || ""}
+                onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 placeholder="Payment status (e.g., Paid)"
               />
               <input
                 type="date"
                 name="lastPayment"
+                value={formData.lastPayment || ""}
+                onChange={handleChange}
                 className="w-full border rounded-lg p-2"
                 placeholder="Last Payment Date"
               />
