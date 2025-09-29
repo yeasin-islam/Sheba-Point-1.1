@@ -4,7 +4,7 @@
 
 # ShebaPoint - Telemedicine Platform
 
-**Tagline:** *Your health, anywhere, anytime.*
+**Tagline:** _Your health, anywhere, anytime._
 
 ---
 
@@ -49,23 +49,24 @@
 
 ## Tech Stack
 
-| Layer         | Technology                                      | Purpose/Description                                 |
-|---------------|-------------------------------------------------|-----------------------------------------------------|
-| Frontend      | React.js, Tailwind CSS                          | UI, responsive design, component-based architecture |
-| State Mgmt    | React Query / Redux                             | Data fetching, caching, global state                |
-| Routing       | React Router                                    | SPA navigation, route protection                    |
-| Backend       | Node.js, Express.js                             | RESTful API server, business logic                  |
-| Database      | MongoDB                                         | Document store for users, records, chats            |
-| Cache         | Redis                                           | AI response/session cache, rate limiting            |
-| AI/ML         | OpenAI/Gemini API, TensorFlow.js                | Symptom checker, AI notes, analytics                |
-| Real-Time     | WebRTC, Socket.io, Firestore                    | Video/audio, real-time messaging                    |
-| Payments      | SSL-Commerz, bKash, Nagad, Stripe               | Payment processing, subscriptions                   |
-| Security      | JWT, OAuth2, AES-256                            | Auth, authorization, encryption                     |
-| Notifications | Firebase Cloud Messaging                        | Push notifications                                  |
-| Offline       | Service Workers, IndexedDB                      | Offline-first experience                            |
-| Analytics     | Google Analytics, Custom Dashboards             | Usage tracking, performance monitoring              |
+| Layer         | Technology                          | Purpose/Description                                 |
+| ------------- | ----------------------------------- | --------------------------------------------------- |
+| Frontend      | React.js, Tailwind CSS              | UI, responsive design, component-based architecture |
+| State Mgmt    | React Query / Redux                 | Data fetching, caching, global state                |
+| Routing       | React Router                        | SPA navigation, route protection                    |
+| Backend       | Node.js, Express.js                 | RESTful API server, business logic                  |
+| Database      | MongoDB                             | Document store for users, records, chats            |
+| Cache         | Redis                               | AI response/session cache, rate limiting            |
+| AI/ML         | OpenAI/Gemini API, TensorFlow.js    | Symptom checker, AI notes, analytics                |
+| Real-Time     | WebRTC, Socket.io, Firestore        | Video/audio, real-time messaging                    |
+| Payments      | SSL-Commerz, bKash, Nagad, Stripe   | Payment processing, subscriptions                   |
+| Security      | JWT, OAuth2, AES-256                | Auth, authorization, encryption                     |
+| Notifications | Firebase Cloud Messaging            | Push notifications                                  |
+| Offline       | Service Workers, IndexedDB          | Offline-first experience                            |
+| Analytics     | Google Analytics, Custom Dashboards | Usage tracking, performance monitoring              |
 
 ---
+
 ## Folder Structure
 
 ```
@@ -194,6 +195,69 @@ User {
   email: String,
   passwordHash: String,
   role: { type: String, enum: ['patient', 'doctor', 'pharmacy', 'lab', 'admin'] },
+  createdAt: Date,
+  updatedAt: Date
+}
+doctor{
+  _id: ObjectId,
+  role: "doctor",               // fixed role
+  name: String,                 // full name
+  email: String,
+  phone: String,
+  passwordHash: String,         // only for auth
+
+  profileImage: String,         // doctor's picture
+  tagline: String,              // short intro
+  about: String,                // detailed bio
+
+  address: String,
+  dateOfBirth: Date,
+  gender: String,
+
+  specialties: [String],        // e.g. ["Cardiology", "Dermatology"]
+  qualifications: [String],     // degrees/certificates
+  languages: [String],
+  experienceYears: Number,
+  bmdc: String,                 // BMDC registration (optional)
+
+  workplace: String,
+  consultationFee: Number,      // fee for patients
+
+  availability: [
+    {
+      dayOfWeek: Number,        // 0 = Sun, 6 = Sat
+      slots: [{ startTime: String, endTime: String }]
+    }
+  ],
+
+  services: [String],           // medical services
+  education: [
+    { degree: String, institution: String, year: Number }
+  ],
+  awards: [
+    { name: String, issuer: String, year: Number }
+  ],
+
+  reviews: [
+    { patient: String, text: String, rating: Number }
+  ],
+  ratings: Number,
+  totalReviews: Number,
+
+  chamber: {
+    name: String,
+    address: String,
+    schedule: String
+  },
+
+  paymentInfo: {                // private fields
+    bkashNumber: String,
+    bankAccountNumber: String,
+    stripeCustomerId: String
+  },
+
+  isActive: Boolean,
+  status: String,               // "pending", "verified", "rejected"
   createdAt: Date,
   updatedAt: Date
 }
