@@ -6,6 +6,39 @@
     themes: light --default;
 }
 
+::selection {
+  background: #209187;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+::-moz-selection {
+  background: #209187;
+  color: #ffffff;
+  text-shadow: none;
+}
+
+
+/* Entire scrollbar */
+html body::-webkit-scrollbar {
+  width: 5px;
+}
+
+/* Scrollbar Track */
+html body::-webkit-scrollbar-track {
+  background: #209187;
+}
+
+/* Scrollbar Thumb */
+html body::-webkit-scrollbar-thumb {
+  background: #209187;
+  border-radius: none;
+}
+
+/* Scrollbar Thumb on hover */
+html body::-webkit-scrollbar-thumb:hover {
+  background: #00ffea;
+}
 
 @plugin "daisyui/theme" {
     name: "light";
