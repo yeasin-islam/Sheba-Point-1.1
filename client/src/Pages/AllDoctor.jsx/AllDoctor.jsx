@@ -80,7 +80,7 @@ const AllDoctor = () => {
           <img src={doc.profileImage} alt={doc.name} className="w-full h-full object-cover" />
 
           {/* Rating */}
-          <div className="absolute top-2 left-2 flex items-center bg-yellow-500 px-2 py-1 rounded text-white text-sm font-semibold shadow">
+          <div className="absolute top-2 left-2 flex items-center bg-[#1293FE] px-2 py-1 rounded text-white text-sm font-semibold shadow">
             ⭐ {doc.ratings?.toFixed(1)}
           </div>
 
