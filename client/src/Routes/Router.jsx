@@ -4,7 +4,6 @@ import Home from "../pages/Home/Home/Home";
 import DashboardLayout from "../Layouts/DashboardLayout/DashboardLayout";
 import DashboardHome from "../pages/Dashboard/DashboardHome/DashboardHome";
 import Appointments from "../pages/Dashboard/DoctorsPages/Appointments/Appointments";
-import Referrals from "../pages/Dashboard/DoctorsPages/Referrals/Referrals";
 import DoctorsPatient from "../pages/Dashboard/DoctorsPages/DoctorsPatient/DoctorsPatient";
 import DoctorConsulation from "../pages/Dashboard/DoctorsPages/DoctorConsultation/DoctorConsultation";
 import PatientConsultation from "../pages/Dashboard/PatientsPages/PatientConsultation/PatientConsultation";
@@ -29,11 +28,11 @@ import AllDoctor from "../Pages/AllDoctor.jsx/AllDoctor";
 import DoctorDetailsPage from "../Pages/DoctorDetailsPage/DoctorDetailsPage";
 import ConsultationLayout from "../Layouts/ConsultationLayout";
 import DoctorApplication from "../Pages/dashboard/PatientsPages/DoctorApplication";
-import DoctorProfile from "../components/Doctor/DoctorProfile";
 import AllDoctors from "../Pages/dashboard/AdminPages/AllDoctors/AllDoctors";
 import AuthLayout from "../Layouts/AuthLayout/AuthLayout";
 import Login from './../Pages/Authentication/Login/Login';
 import Register from "../Pages/Authentication/Register/Register";
+import DoctorDashboardProfile from "../Pages/dashboard/DoctorsPages/DoctorProfile/DoctorProfile";
 
 export const router = createBrowserRouter([
   // Keep standards, use elements instead of Components for consistency
@@ -125,16 +124,12 @@ export const router = createBrowserRouter([
         element: <DoctorConsulation />,
       },
       {
-        path: "doctor/referrals",
-        element: <Referrals />,
-      },
-      {
         path: "doctor/manage-bookings",
         element: <ManageBookings />,
       },
       {
         path: "doctor/profile",
-        element: <DoctorProfile />,
+        element: <DoctorDashboardProfile />,
       },
       {
         path: "doctor/patient/:patientId",

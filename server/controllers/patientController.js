@@ -27,7 +27,7 @@ exports.createPatient = async (req, res) => {
   }
 };
 exports.createAnApplication = async (req, res) => {
-  const applicationData = { ...req.body, status: 'pending' };
+  const applicationData = { ...req.body, status: "pending" };
   try {
     const db = await connectDB();
     // added validation is email is exist do not take again
@@ -63,10 +63,12 @@ exports.acceptDoctorApplication = async (req, res) => {
   const { id } = req.params;
   try {
     const db = await connectDB();
-    const result = await db.collection("applications").updateOne(
-      { _id: require('mongodb').ObjectId(id) },
-      { $set: { status: "accepted" } }
-    );
+    const result = await db
+      .collection("applications")
+      .updateOne(
+        { _id: require("mongodb").ObjectId(id) },
+        { $set: { status: "accepted" } }
+      );
     if (result.matchedCount === 0) {
       return res.status(404).json({ error: "Application not found." });
     }
@@ -81,12 +83,35 @@ exports.rejectDoctorApplication = async (req, res) => {
   const { id } = req.params;
   try {
     const db = await connectDB();
-    const result = await db.collection("applications").deleteOne({ _id: require('mongodb').ObjectId(id) });
+    const result = await db
+      .collection("applications")
+      .deleteOne({ _id: require("mongodb").ObjectId(id) });
     if (result.deletedCount === 0) {
       return res.status(404).json({ error: "Application not found." });
     }
     res.json({ success: true, id });
   } catch (err) {
     res.status(500).json({ error: err.message });
+  }
+};
+exports.patientProfileUpdate = async (req, res) => {
+  const db = await connectDB();
+  const { email, ...formData } = req.body;
+  if (!email) return res.status(400).json({ message: "Email is required" });
+
+  try {
+    const result = await db.collection("users").updateOne(
+      { email },
+      {
+        $set: {
+          ...formData,
+          updatedAt: new Date(),
+        },
+      }
+    );
+
+    res.json(result);
+  } catch (error) {
+    res.status(500).json({ message: "Update failed", error });
   }
 };
